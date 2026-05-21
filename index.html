@@ -794,13 +794,27 @@
     0% { height: 4px; }
     100% { height: 20px; }
   }
+
+  /* 추가 모달 스타일 */
+  #alarmModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 5000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  #alarmModal.show {
+    display: flex;
+  }
 </style>
 </head>
 <body>
 
 <div class="stars" id="stars"></div>
 
-<!-- Loading overlay with 긴급 탈출(Bypass) 버튼 -->
 <div id="loadingOverlay" class="loading-overlay">
   <div class="spinner"></div>
   <div style="font-weight: 700; font-size: 16px; margin-bottom: 8px;">🚀 우주 보물상자 연결하는 중...</div>
@@ -814,14 +828,12 @@
 </div>
 
 <div class="app">
-  <!-- Header -->
   <div class="header">
     <div class="header-title">🎮 보물상자</div>
     <div class="header-sub" id="headerSub">다준이의 보물상자</div>
     <button class="parent-btn" onclick="openParentModal()" id="parentBtn">👑 부모님</button>
   </div>
 
-  <!-- Family Connection Panel -->
   <div class="family-bar">
     <div class="family-bar-left">
       <span class="family-icon-label">🏠 가족 연동 상태:</span>
@@ -833,7 +845,6 @@
     </div>
   </div>
 
-  <!-- Stats values -->
   <div class="stats-row">
     <div class="stat-card time">
       <div class="stat-icon">⏰</div>
@@ -849,7 +860,6 @@
     </div>
   </div>
 
-  <!-- Active Live Game Timer Block (실시간 연동용 카운트다운 타이머) -->
   <div id="liveTimerCard" class="live-timer-card" style="display: none;">
     <div class="live-timer-header">
       <span class="live-timer-title">⏰ 활성화된 게임 시간</span>
@@ -864,7 +874,6 @@
     </div>
   </div>
 
-  <!-- Redesigned 2-Row Navigation -->
   <div class="tab-nav">
     <button class="tab-btn active" onclick="showTab('missions')" id="tab-missions">
       <span class="tab-icon">🎯</span>미션
@@ -889,12 +898,7 @@
     </button>
   </div>
 
-  <!-- TAB SECTIONS -->
-  
-  <!-- MISSIONS -->
   <div class="section active" id="section-missions">
-    
-    <!-- 1. 특별 미션 카테고리 (1회성) -->
     <div class="accordion-header" onclick="toggleAccordion('special')">
       <div class="accordion-title">
         <span>🌟 특별 미션 (1회성)</span>
@@ -906,7 +910,6 @@
       <div id="specialMissionList"></div>
     </div>
 
-    <!-- 2. 오늘의 미션 카테고리 (상시 반복) -->
     <div class="accordion-header" onclick="toggleAccordion('regular')">
       <div class="accordion-title">
         <span>🎯 오늘의 미션 (상시 반복)</span>
@@ -917,14 +920,11 @@
     <div class="accordion-content" id="content-regular" style="margin-bottom: 12px;">
       <div id="regularMissionList"></div>
     </div>
-
   </div>
 
-  <!-- 🚀 TAB: KNOWLEDGE EXPEDITION (지식 대탐험) -->
   <div class="section" id="section-expedition">
     <div class="section-title">🚀 지니의 지식 대탐험</div>
     
-    <!-- Setup Card -->
     <div class="action-card" id="expeditionSetup" style="border: 1px solid var(--purple);">
       <div class="action-title" style="color: var(--purple);">지식 탐험 과목 선택하기</div>
       <div style="font-size:12px; color:var(--subtext); margin-bottom:12px; line-height: 1.5;">
@@ -947,10 +947,8 @@
       </button>
     </div>
 
-    <!-- Active Presentation Area -->
     <div id="expeditionActive" style="display: none;">
       <div class="study-slide-card">
-        <!-- Voice Visualizer -->
         <div class="wave-container" id="ttsVisualizer">
           <div class="wave-bar"></div>
           <div class="wave-bar"></div>
@@ -965,20 +963,15 @@
         
         <div class="study-nav-row">
           <button class="action-btn" style="background: rgba(255,255,255,0.1); color: white; font-size:12px; padding:10px 14px;" onclick="prevSlide()" id="btnPrevSlide">◀ 이전</button>
-          
-          <button class="audio-btn" onclick="speakCurrentSlide()" id="btnSpeak">
-            🔊 지니 목소리 듣기
-          </button>
-          
+          <button class="audio-btn" onclick="speakCurrentSlide()" id="btnSpeak">🔊 지니 목소리 듣기</button>
           <button class="action-btn" style="background: var(--purple); color: white; font-size:12px; padding:10px 14px;" onclick="nextSlide()" id="btnNextSlide">다음 ▶</button>
         </div>
       </div>
     </div>
 
-    <!-- Active Quiz Area after Slides -->
     <div id="expeditionQuiz" style="display: none; background: rgba(0,0,0,0.25); padding:18px; border-radius:var(--radius); border: 2px solid var(--green);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">
-        <span style="font-weight:bold; color:var(--green); font-size:14px;" id="expeditionQuizTitle">🪐 지식 확인 퀴즈 (${currentExpeditionQuizIndex + 1}/2)</span>
+        <span style="font-weight:bold; color:var(--green); font-size:14px;" id="expeditionQuizTitle">🪐 지식 확인 퀴즈 (1/2)</span>
         <button onclick="exitExpedition()" style="background:none; border:none; color:var(--accent); font-size:12px; cursor:pointer;">탐험 종료 ✕</button>
       </div>
       <div id="expeditionQuestion" style="font-weight:700; font-size:15px; margin-bottom:16px; line-height:1.5;">문제...</div>
@@ -987,11 +980,9 @@
     </div>
   </div>
 
-  <!-- ✨ PLAYGROUND (AI & MINI GAMES) -->
   <div class="section" id="section-playground">
     <div class="section-title">✨ 우주 놀이터 (AI & 미니게임)</div>
 
-    <!-- Gemini AI Quiz Card -->
     <div class="action-card" style="border: 1px solid var(--purple);">
       <div class="action-title" style="color: var(--purple); display: flex; align-items: center; gap: 8px;">
         🚀 우주 조종사 지니의 AI 퀴즈 ✨
@@ -1028,7 +1019,6 @@
         </button>
       </div>
 
-      <!-- Live AI Quiz Content Area -->
       <div id="aiQuizLive" style="display: none; background: rgba(0,0,0,0.25); padding:16px; border-radius:14px; margin-top:10px;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">
           <span style="font-weight:bold; color:var(--purple); font-size:13px;">👨‍🚀 조종사 지니의 출제 문제</span>
@@ -1040,7 +1030,6 @@
       </div>
     </div>
 
-    <!-- NEW GAME: Space Shooter (외계인 침공 격추 작전) -->
     <div class="action-card" style="border: 1px solid var(--blue);">
       <div class="action-title" style="color: var(--blue);">🔫 외계인 침공 격추 작전 (Space Shooter)</div>
       <div style="font-size:12px; color:var(--subtext); margin-bottom:12px;">좌우로 우주선을 이동해 레이저로 침공하는 외계 군단을 격추하고 은하를 수호하세요! (10마리 처치 시 💰25코인!)</div>
@@ -1051,7 +1040,6 @@
           <span id="shooterScore">처치한 외계인: 0 / 10</span>
           <span id="shooterLives">보호막 체력: ❤️❤️❤️❤️❤️</span>
         </div>
-        <!-- 스크롤 방지 코드 제거: 스마트폰에서 화면 스크롤이 정상적으로 되도록 수정 -->
         <canvas id="alienShooterCanvas" width="320" height="240" style="background:#050d1a; border-radius:12px; border:1px solid rgba(255,255,255,0.1); width:100%; max-width:320px; aspect-ratio:4/3; margin:0 auto; display:block;"></canvas>
         <div style="display:flex; gap:16px; justify-content:center; margin-top:10px;">
           <button class="action-btn" style="flex:1; padding:12px; background:rgba(255,255,255,0.1);" onmousedown="moveShooterLeft(true)" onmouseup="moveShooterLeft(false)" ontouchstart="moveShooterLeft(true)" ontouchend="moveShooterLeft(false)">◀ 좌로 이동</button>
@@ -1060,7 +1048,6 @@
       </div>
     </div>
 
-    <!-- Game 1: Space Meteor Dodger (운석 피하기 게임 - 똥피하기) -->
     <div class="action-card" style="border: 1px solid var(--accent);">
       <div class="action-title" style="color: var(--accent);">☄️ 운석 피하기 게임 (Poop Dodge style)</div>
       <div style="font-size:12px; color:var(--subtext); margin-bottom:12px;">다준이의 우주선을 조종해 떨어지는 빨간 운석을 피하고 노란 스타코인 3개를 드세요! (완수 시 💰20코인!)</div>
@@ -1071,7 +1058,6 @@
           <span id="dodgeCoins">수집한 코인: 0 / 3</span>
           <span id="dodgeLives">체력: ❤️❤️❤️❤️❤️</span>
         </div>
-        <!-- 스크롤 방지 코드 제거 -->
         <canvas id="meteorDodgeCanvas" width="320" height="240" style="background:#050d1a; border-radius:12px; border:1px solid rgba(255,255,255,0.1); width:100%; max-width:320px; aspect-ratio:4/3; margin:0 auto; display:block;"></canvas>
         <div style="display:flex; gap:16px; justify-content:center; margin-top:10px;">
           <button class="action-btn" style="flex:1; padding:12px; background:rgba(255,255,255,0.1);" onmousedown="moveDodgeLeft(true)" onmouseup="moveDodgeLeft(false)" ontouchstart="moveDodgeLeft(true)" ontouchend="moveDodgeLeft(false)">◀ 왼쪽으로</button>
@@ -1080,7 +1066,6 @@
       </div>
     </div>
 
-    <!-- Game 2: Space Brick Breaker (우주 알카노이드 - 블록깨기) -->
     <div class="action-card" style="border: 1px solid var(--green);">
       <div class="action-title" style="color: var(--green);">🧱 우주 블록 깨기 (Cosmic Brick Breaker)</div>
       <div style="font-size:12px; color:var(--subtext); margin-bottom:12px;">공을 튕겨 우주 블록을 모두 파괴하세요! 패들을 조종해 공을 떨어뜨리지 않으면 승리! (클리어 시 💰30코인!)</div>
@@ -1091,7 +1076,6 @@
           <span id="breakerScore">파괴율: 0%</span>
           <span id="breakerLives">남은 기회: ❤️❤️❤️❤️❤️</span>
         </div>
-        <!-- 스크롤 방지 코드 제거 -->
         <canvas id="brickBreakerCanvas" width="320" height="240" style="background:#050d1a; border-radius:12px; border:1px solid rgba(255,255,255,0.1); width:100%; max-width:320px; aspect-ratio:4/3; margin:0 auto; display:block;"></canvas>
         <div style="display:flex; gap:16px; justify-content:center; margin-top:10px;">
           <button class="action-btn" style="flex:1; padding:12px; background:rgba(255,255,255,0.1);" onmousedown="moveBreakerLeft(true)" onmouseup="moveBreakerLeft(false)" ontouchstart="moveBreakerLeft(true)" ontouchend="moveBreakerLeft(false)">◀ 왼쪽</button>
@@ -1100,7 +1084,6 @@
       </div>
     </div>
 
-    <!-- Game 3: Math Defense Game Card -->
     <div class="action-card" style="border: 1px solid var(--purple);">
       <div class="action-title" style="color: var(--purple);">☄️ 우주 사칙연산 디펜스 게임</div>
       <div style="font-size:12px; color:var(--subtext); margin-bottom:12px;">떨어지는 연산 운석의 정답을 맞추고 은하수를 구하세요! (3개 맞추면 💰20코인 적립)</div>
@@ -1145,11 +1128,9 @@
     </div>
   </div>
 
-  <!-- 🏦 COSMIC BANK (SAVINGS & EXCHANGE) -->
   <div class="section" id="section-bank">
     <div class="section-title">🏦 우주 은행 & 목표 달성 저금통</div>
 
-    <!-- 13,000원 최종 목표 저금통 게이지 -->
     <div class="action-card" style="border: 2px solid var(--gold); background: linear-gradient(135deg, rgba(255,215,0,0.15), var(--card));">
       <div class="action-title" style="color: var(--gold); display: flex; align-items: center; justify-content: space-between;">
         <span>🎯 다준이의 최종 꿈 저금통</span>
@@ -1170,7 +1151,6 @@
 
       <div class="divider"></div>
 
-      <!-- Deposit Control -->
       <div style="display:grid; grid-template-columns: 1fr auto; gap:8px; align-items:center;">
         <input type="number" class="num-input" id="depositAmount" placeholder="저금할 코인 수" min="1">
         <button class="action-btn use-coin" style="padding:12px 20px;" onclick="depositToBank()">저금통에 저금하기 💰</button>
@@ -1181,7 +1161,6 @@
       </div>
     </div>
 
-    <!-- 양방향 코인 환전소 -->
     <div class="action-card">
       <div class="action-title" style="color: var(--blue);">💱 우주 실시간 환전소 (시간 ⇄ 코인)</div>
       <div style="font-size:12px; color:var(--subtext); margin-bottom:12px;">게임 시간과 보물 코인을 자유롭게 환전할 수 있습니다. 환율은 고정되어 있습니다.</div>
@@ -1202,11 +1181,9 @@
     </div>
   </div>
 
-  <!-- USE -->
   <div class="section" id="section-use">
     <div class="section-title">🕹️ 보상 사용하기</div>
 
-    <!-- PWA Push Notifications Toggle -->
     <div class="action-card" style="border: 1px solid var(--accent);">
       <div class="action-title" style="color: var(--accent);">🛎️ 스마트폰 알림 및 진동 활성화</div>
       <div style="font-size:12px; color:var(--subtext); margin-bottom:12px; line-height: 1.5;">
@@ -1240,7 +1217,6 @@
     </div>
   </div>
 
-  <!-- HISTORY -->
   <div class="section" id="section-history">
     <div class="section-title">📋 적립/사용 기록</div>
     <div style="display:flex;gap:8px;margin-bottom:14px">
@@ -1251,23 +1227,19 @@
     <div id="historyList"></div>
   </div>
 
-  <!-- PARENT ADMIN -->
   <div class="section" id="section-parent">
     <div class="section-title">👑 부모님 관리 패널</div>
 
-    <!-- Approvals Waiting -->
     <div class="parent-section">
       <div class="parent-section-title">🔔 승인 대기중인 미션</div>
       <div id="parentApprovalList"></div>
     </div>
 
-    <!-- Completed Missions Reversion -->
     <div class="parent-section">
       <div class="parent-section-title">⏪ 미션 완료 회수/취소</div>
       <div id="parentCompletedList"></div>
     </div>
 
-    <!-- Cloud Integration Configuration -->
     <div class="parent-section">
       <div class="parent-section-title">☁️ 실시간 스마트폰 연동 (구글 클라우드 연결)</div>
       <div style="font-size: 11px; color: var(--subtext); margin-bottom: 12px; line-height: 1.5;">
@@ -1281,11 +1253,10 @@
       <button class="submit-btn" style="background: rgba(233,69,96,0.15); border: 1px solid rgba(233,69,96,0.3); color: var(--accent); margin-top: 6px;" onclick="resetCloudConfig()">연동 해제 및 로컬 모드로 전환</button>
     </div>
 
-    <!-- NEW FEATURE: Gemini API Key Setup -->
     <div class="parent-section">
       <div class="parent-section-title">✨ Gemini AI 개인 API 키 설정</div>
       <div style="font-size: 11px; color: var(--subtext); margin-bottom: 12px; line-height: 1.5;">
-        코딩을 통해 직접 연결되어 있으므로 이제 따로 입력하지 않아도 AI가 즉시 생성됩니다. 필요시 변경 가능합니다.
+        AI 퀴즈 생성을 위해 부모님의 개인 무료 Gemini API 키를 등록해 주세요.
       </div>
       <div class="form-group">
         <label class="form-label">개인 Gemini API Key</label>
@@ -1294,7 +1265,6 @@
       <button class="submit-btn blue" onclick="saveGeminiApiKey()">Gemini API 키 연결 및 저장 💾</button>
     </div>
 
-    <!-- Target Goal Configuration -->
     <div class="parent-section">
       <div class="parent-section-title">🎯 최종 꿈 저금통 금액 설정</div>
       <div class="form-group">
@@ -1304,7 +1274,6 @@
       <button class="submit-btn green" onclick="saveTargetGoalAmount()">목표금액 설정 완료 💾</button>
     </div>
 
-    <!-- Add Mission -->
     <div class="parent-section">
       <div class="parent-section-title">➕ 새 미션 추가</div>
       <div class="form-group">
@@ -1335,7 +1304,7 @@
           <input type="number" class="form-input" id="missionTime" placeholder="0" min="0">
         </div>
         <div class="form-group">
-          <label class="form-label">💰 코인 보상 (최소 10원 단위 권장)</label>
+          <label class="form-label">💰 코인 보상</label>
           <input type="number" class="form-input" id="missionCoin" placeholder="10" min="0" step="10">
         </div>
       </div>
@@ -1349,7 +1318,6 @@
       <button class="submit-btn" onclick="addMission()">미션 추가하기 🎯</button>
     </div>
 
-    <!-- Manual reward -->
     <div class="parent-section">
       <div class="parent-section-title">🎁 직접 보상 주기</div>
       <div class="form-group">
@@ -1369,7 +1337,6 @@
       <button class="submit-btn green" onclick="giveReward()">보상 주기 🎁</button>
     </div>
 
-    <!-- Manual deduction (Penalty) -->
     <div class="penalty-section">
       <div class="parent-section-title" style="color: var(--accent);">🚨 직접 보상 차감하기 (벌칙)</div>
       <div class="form-group">
@@ -1389,7 +1356,6 @@
       <button class="submit-btn" style="background: linear-gradient(135deg, #c0392b, #962d22);" onclick="deductReward()">보상 차감하기 🚨</button>
     </div>
 
-    <!-- Settings -->
     <div class="parent-section">
       <div class="parent-section-title">⚙️ 설정</div>
       <div class="form-group">
@@ -1403,7 +1369,6 @@
       <button class="submit-btn blue" onclick="saveSettings()">저장하기 💾</button>
     </div>
 
-    <!-- Mission List Management -->
     <div class="parent-section">
       <div class="parent-section-title">📝 미션 목록 관리</div>
       <div id="parentMissionList"></div>
@@ -1411,12 +1376,10 @@
   </div>
 </div>
 
-<!-- Password Modal -->
 <div class="modal-overlay" id="pwModal">
   <div class="modal">
     <div class="modal-title">👑 부모님 확인</div>
-    <input type="password" class="modal-input" id="pwInput" placeholder="••••" maxlength="6"
-           onkeydown="if(event.key==='Enter')checkPw()">
+    <input type="password" class="modal-input" id="pwInput" placeholder="••••" maxlength="6" onkeydown="if(event.key==='Enter')checkPw()">
     <div class="modal-btns">
       <button class="modal-btn cancel" onclick="closeModal()">취소</button>
       <button class="modal-btn confirm" onclick="checkPw()">확인</button>
@@ -1424,15 +1387,13 @@
   </div>
 </div>
 
-<!-- Family Code Modal -->
 <div class="modal-overlay" id="familyModal">
   <div class="modal">
     <div class="modal-title">🏠 가족 연결하기</div>
     <div style="font-size: 12px; color: var(--subtext); margin-bottom: 16px; text-align: center; line-height: 1.5;">
       상대방 기기에 표시된 6자리 가족 코드를 입력하면 해당 보물상자로 연동됩니다.
     </div>
-    <input type="number" class="modal-input" id="familyCodeInput" placeholder="123456" maxlength="6"
-           onkeydown="if(event.key==='Enter')connectFamilyCode()">
+    <input type="number" class="modal-input" id="familyCodeInput" placeholder="123456" maxlength="6" onkeydown="if(event.key==='Enter')connectFamilyCode()">
     <div class="modal-btns">
       <button class="modal-btn cancel" onclick="closeFamilyModal()">취소</button>
       <button class="modal-btn confirm" onclick="connectFamilyCode()">연결</button>
@@ -1440,13 +1401,10 @@
   </div>
 </div>
 
-<!-- Custom Reusable Confirm Modal -->
 <div class="modal-overlay" id="confirmModal">
   <div class="modal">
     <div class="modal-title" id="confirmTitle">⚠️ 확인</div>
-    <div style="font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 24px; text-align: center;" id="confirmMessage">
-       정말로 진행하시겠습니까?
-    </div>
+    <div style="font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 24px; text-align: center;" id="confirmMessage">정말로 진행하시겠습니까?</div>
     <div class="modal-btns">
       <button class="modal-btn cancel" onclick="closeConfirmModal(false)">취소</button>
       <button class="modal-btn confirm" onclick="closeConfirmModal(true)">확인</button>
@@ -1454,23 +1412,31 @@
   </div>
 </div>
 
-<!-- NEW MODAL: Gemini API Key Guide Modal -->
+<div id="alarmModal">
+  <div style="font-size: 80px; margin-bottom: 20px; animation: float 1s ease-in-out infinite;">🛎️</div>
+  <div style="font-family: 'Jua', sans-serif; font-size: 26px; color: #ffd700; margin-bottom: 10px; text-align:center;">약속 시간 종료!</div>
+  <div style="font-size: 14px; color: #ffffff; margin-bottom: 30px; text-align: center; line-height: 1.6; max-width: 300px;">
+    설정한 게임 시간이 모두 지나갔습니다.<br>이제 우주 보물상자를 정리하고 눈을 보호해요! 💫
+  </div>
+  <button onclick="dismissAlarm()" style="background: linear-gradient(135deg, #e94560, #c0392b); border: none; color: white; padding: 14px 40px; border-radius: 14px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(233,69,96,0.4);">
+    알람 끄기 ✕
+  </button>
+</div>
+
 <div class="modal-overlay" id="geminiKeyGuideModal">
   <div class="modal" style="max-width: 440px; width: 95%; max-height: 80vh; overflow-y: auto; text-align: left;">
-    <div class="modal-title" style="color: var(--purple);">🔑 초고속 AI 퀴즈 활성화 가이드</div>
+    <div class="modal-title" style="color: var(--purple);">🔑 AI 퀴즈 활성화 가이드</div>
     <div style="font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 16px;">
-      <p style="margin-bottom: 8px; font-weight: bold; color: var(--gold);">💡 왜 퀴즈와 탐험이 생성되지 않거나 느린가요?</p>
+      <p style="margin-bottom: 8px; font-weight: bold; color: var(--gold);">💡 AI 퀴즈가 생성되지 않나요?</p>
       <p style="margin-bottom: 14px; color: var(--subtext); font-size: 12px;">
-        현재 공용 AI 연결 채널이 만료되어 있습니다. 아버님의 <strong>개인 무료 Gemini API 키</strong>를 딱 한 번만 등록해 주시면, 전송 제한과 지연 없이 즉시 <strong>1초 만에 퀴즈가 생성</strong>됩니다!
+        부모님 설정 패널에서 <strong>개인 무료 Gemini API 키</strong>를 등록해 주시면 끊김 없이 초고속으로 AI 퀴즈가 활성화됩니다.
       </p>
-      
       <p style="font-weight: bold; margin-bottom: 6px;">🛠️ 1분 만에 무료 API 키 발급받는 방법:</p>
       <ol style="padding-left: 18px; margin-bottom: 14px; font-size: 12px; display: flex; flex-direction: column; gap: 8px; list-style-type: decimal;">
-        <li><a href="https://aistudio.google.com/" target="_blank" style="color: var(--blue); text-decoration: underline; font-weight: bold;">구글 AI 스튜디오 (클릭하여 이동)</a>에 로그인합니다.</li>
-        <li>화면 중앙 또는 상단의 파란색 <strong>'Get API key'</strong> 버튼을 클릭합니다.</li>
-        <li><strong>'Create API key'</strong> 버튼을 누르고 임의의 프로젝트를 선택해 발급합니다.</li>
-        <li>생성된 <code style="color:var(--gold); font-weight:bold;">AIzaSy...</code> 형식의 API 키를 복사합니다.</li>
-        <li>아래에 입력 후 저장하면 부모와 자녀 스마트폰에 즉시 연동되며, 평생 무료로 안전하고 초고속으로 작동합니다.</li>
+        <li><a href="https://aistudio.google.com/" target="_blank" style="color: var(--blue); text-decoration: underline; font-weight: bold;">구글 AI 스튜디오</a>에 로그인합니다.</li>
+        <li><strong>'Get API key'</strong> 버튼을 클릭합니다.</li>
+        <li><strong>'Create API key'</strong>를 눌러 발급받습니다.</li>
+        <li>생성된 <code style="color:var(--gold); font-weight:bold;">AIzaSy...</code> 형식의 키를 복사해 하단에 등록해 주세요.</li>
       </ol>
       <div class="form-group" style="margin-top:14px;">
         <label class="form-label" style="color:var(--purple); font-weight:bold;">발급받은 API 키 입력</label>
@@ -1484,16 +1450,13 @@
   </div>
 </div>
 
-<!-- Toast notifications -->
 <div class="toast" id="toast"></div>
 
-<!-- Firebase SDK Integration -->
 <script type="module">
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-// ========== BACKGROUND STARS GENERATOR ==========
 function renderStars() {
   const container = document.getElementById('stars');
   if (!container) return;
@@ -1507,29 +1470,8 @@ function renderStars() {
   }
 }
 
-// Helper for Promise timeout
-function timeoutPromise(promise, ms, errorMsg) {
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      reject(new Error(errorMsg || "Timeout"));
-    }, ms);
-    
-    promise.then(
-      (res) => {
-        clearTimeout(timer);
-        resolve(res);
-      },
-      (err) => {
-        clearTimeout(timer);
-        reject(err);
-      }
-    );
-  });
-}
-
 const appId = 'treasure-box-prod';
 
-// 다준이네 전용 고정 클라우드 설정값
 const defaultFirebaseConfig = {
   "apiKey": "AIzaSyClOmUNUfFIkr-NDB2PtBvjxLaBaMRT85Q",
   "authDomain": "dajunbomul.firebaseapp.com",
@@ -1543,7 +1485,6 @@ const defaultFirebaseConfig = {
 let app, db, auth;
 let isFirebaseActive = false;
 
-// ========== LOCAL STATE ==========
 let state = {
   familyId: '', 
   kidName: '다준이',
@@ -1590,12 +1531,10 @@ let alarmIntervalId = null;
 let confirmResolve = null;
 let wakeLock = null;
 
-// ========== Generate unique 6 digit code ==========
 function generate6DigitCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// ========== WEB SPEECH API TTS WRAPPER ==========
 function playTTS(text) {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
@@ -1603,16 +1542,11 @@ function playTTS(text) {
     utterance.lang = 'ko-KR';
     utterance.rate = 1.0; 
     
-    // Visualizer on
     const vis = document.getElementById('ttsVisualizer');
     if (vis) vis.style.display = 'flex';
     
-    utterance.onend = () => {
-      if (vis) vis.style.display = 'none';
-    };
-    utterance.onerror = () => {
-      if (vis) vis.style.display = 'none';
-    };
+    utterance.onend = () => { if (vis) vis.style.display = 'none'; };
+    utterance.onerror = () => { if (vis) vis.style.display = 'none'; };
     
     window.speechSynthesis.speak(utterance);
   } else {
@@ -1620,7 +1554,6 @@ function playTTS(text) {
   }
 }
 
-// Stop TTS
 function stopTTS() {
   if ('speechSynthesis' in window) {
     window.speechSynthesis.cancel();
@@ -1629,7 +1562,6 @@ function stopTTS() {
   }
 }
 
-// ========== CUSTOM DECORATIVE CONFIRM DIALOG SYSTEM ==========
 function showConfirm(title, message) {
   document.getElementById('confirmTitle').textContent = title;
   document.getElementById('confirmMessage').innerHTML = message;
@@ -1647,7 +1579,6 @@ function closeConfirmModal(result) {
   }
 }
 
-// ========== DYNAMIC FIREBASE CONNECTOR ==========
 async function initializeFirebaseDynamic(config) {
   try {
     if (!config || !config.apiKey || !config.projectId) {
@@ -1672,20 +1603,35 @@ async function initializeFirebaseDynamic(config) {
   }
 }
 
-// ========== SYNCHRONIZATION WITH CLOUD (REST/FIRESTORE) ==========
+// 비동기 인증을 안전하게 기다리는 함수 (Vercel 특화 보정)
+function ensureAuth() {
+  return new Promise((resolve, reject) => {
+    if (auth.currentUser) return resolve(auth.currentUser);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe();
+      if (user) resolve(user);
+      else {
+        signInAnonymously(auth)
+          .then(res => resolve(res.user))
+          .catch(err => reject(err));
+      }
+    }, reject);
+  });
+}
+
 async function startFirebaseSync(code) {
+  state.familyId = code;
+  localStorage.setItem('treasureBox_familyId', code);
+
+  // 로컬에 저장되어 있던 캐시 데이터 선 로드 (연동 대기 도중 화면이 꺼져 보이는 현상 방지)
+  const offlineData = localStorage.getItem('treasureBox_v2_offline');
+  if (offlineData) {
+    try { state = { ...state, ...JSON.parse(offlineData) }; state.familyId = code; } catch (e) {}
+  }
+  renderAll();
+
   if (!isFirebaseActive) {
-    state.familyId = code;
-    document.getElementById('displayFamilyCode').textContent = code + " (로컬 전용 - ⚠️ 연동을 위해 설정을 등록하세요)";
-    
-    const offlineData = localStorage.getItem('treasureBox_v2_offline');
-    if (offlineData) {
-      try {
-        state = { ...state, ...JSON.parse(offlineData) };
-        state.familyId = code;
-      } catch (e) {}
-    }
-    renderAll();
+    document.getElementById('displayFamilyCode').textContent = code + " (로컬 전용)";
     return;
   }
 
@@ -1695,25 +1641,34 @@ async function startFirebaseSync(code) {
     firebaseUnsubscribe();
   }
 
-  const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'families', code);
-
   try {
-    if (!auth.currentUser) {
-      await timeoutPromise(signInAnonymously(auth), 15000, "익명 로그인 대기 시간 초과");
+    // 1. 구글 인증 세션 완벽 확보
+    await ensureAuth();
+
+    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'families', code);
+    
+    // 2. 실시간 연결 구성 전 클라우드 데이터 유무 조회 및 보정 (Retry 기법 적용)
+    let docSnap = null;
+    for(let i=0; i<3; i++) {
+      try {
+        docSnap = await getDoc(docRef);
+        break;
+      } catch(e) {
+        if(i === 2) throw e;
+        await new Promise(r => setTimeout(r, 1000));
+      }
     }
 
-    const docSnap = await timeoutPromise(getDoc(docRef), 15000, "데이터베이스 접근 시간 초과");
-    if (!docSnap.exists()) {
-      state.familyId = code;
-      await timeoutPromise(setDoc(docRef, state), 15000, "데이터베이스 초기 쓰기 시간 초과");
+    if (!docSnap || !docSnap.exists()) {
+      await setDoc(docRef, state);
     }
 
+    // 3. 실시간 동기화 바인딩
     firebaseUnsubscribe = onSnapshot(docRef, (snapshot) => {
       if (snapshot.exists()) {
         const cloudData = snapshot.data();
-        
         const currentIsParent = state.isParent;
-        // Graceful state key fallbacks for newly added features
+        
         state = { 
           ...state, 
           ...cloudData,
@@ -1726,78 +1681,58 @@ async function startFirebaseSync(code) {
         };
         state.isParent = currentIsParent; 
 
-        localStorage.setItem('treasureBox_familyId', code);
-        renderAll();
+        localStorage.setItem('treasureBox_v2_offline', JSON.stringify(state));
         document.getElementById('displayFamilyCode').textContent = code + " (실시간 연동 중 ⚡)";
-        
+        renderAll();
         syncLocalTimerTicker();
       }
       showLoading(false);
     }, (error) => {
-      console.error("Firestore sync error:", error);
-      showLoading(false);
+      console.error("Firestore Snapshot error:", error);
     });
 
   } catch (err) {
-    console.error("Authentication or Document fetch error:", err);
-    showToast("🔴 보물창고 서버 연결 실패 (로컬 모드 작동)", true);
+    console.error("Firebase sync setup crash:", err);
+    document.getElementById('displayFamilyCode').textContent = code + " (로컬 모드 유지 🔌)";
     showLoading(false);
-
-    isFirebaseActive = false;
-    document.getElementById('displayFamilyCode').textContent = code + " (로컬 전용 - ⚠️ 연동 실패)";
-    renderAll();
   }
 }
 
 async function updateFirestore() {
   localStorage.setItem('treasureBox_v2_offline', JSON.stringify(state));
-  if (!isFirebaseActive || !auth.currentUser) {
-    return;
-  }
+  if (!isFirebaseActive || !auth || !auth.currentUser) return;
   
   const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'families', state.familyId);
   try {
     await setDoc(docRef, state);
   } catch (e) {
-    console.error("Cloud upload failed:", e);
+    console.error("Cloud update failed:", e);
   }
 }
 
-// ========== LIVE TIMER ENGINE ==========
 function syncLocalTimerTicker() {
-  if (timerTickerId) {
-    clearInterval(timerTickerId);
-    timerTickerId = null;
-  }
+  if (timerTickerId) { clearInterval(timerTickerId); timerTickerId = null; }
 
   if (state.activeTimer && state.activeTimer.running) {
     requestWakeLock();
-
     timerTickerId = setInterval(() => {
       const now = Date.now();
       const difference = state.activeTimer.endTime - now;
       
       if (difference <= 0) {
-        clearInterval(timerTickerId);
-        timerTickerId = null;
-        
+        clearInterval(timerTickerId); timerTickerId = null;
         state.activeTimer.running = false;
         updateFirestore();
-        
         triggerEndAlarm();
-        
         document.getElementById('liveTimerCard').style.display = 'none';
         renderAll();
       } else {
         document.getElementById('liveTimerCard').style.display = 'block';
-        
         const totalSeconds = Math.ceil(difference / 1000);
         const mins = Math.floor(totalSeconds / 60);
         const secs = totalSeconds % 60;
         
-        document.getElementById('liveTimerDigits').textContent = 
-          `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-          
+        document.getElementById('liveTimerDigits').textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         const elapsedPercent = Math.min(100, Math.max(0, (totalSeconds / state.activeTimer.initialDuration) * 100));
         document.getElementById('liveTimerProgressBar').style.width = `${elapsedPercent}%`;
         document.getElementById('liveTimerPercent').textContent = `${Math.round(elapsedPercent)}%`;
@@ -1812,23 +1747,18 @@ function syncLocalTimerTicker() {
 function startTimer(durationInMinutes) {
   const durationInSeconds = durationInMinutes * 60;
   const now = Date.now();
-  
   state.activeTimer = {
     endTime: now + (durationInSeconds * 1000),
     initialDuration: durationInSeconds,
     running: true
   };
-  
   updateFirestore();
   syncLocalTimerTicker();
   showToast(`⚡ ${durationInMinutes}분 게임 시작! 타이머가 가동됩니다.`);
 }
 
 async function stopTimer() {
-  const confirmResult = await showConfirm(
-    "⏹️ 타이머 종료", 
-    "현재 작동 중인 게임 시간 타이머를 정말로 종료하시겠습니까?"
-  );
+  const confirmResult = await showConfirm("⏹️ 타이머 종료", "현재 작동 중인 게임 시간 타이머를 정말로 종료하시겠습니까?");
   if (!confirmResult) return;
   
   state.activeTimer.running = false;
@@ -1841,2174 +1771,892 @@ async function stopTimer() {
 
 function triggerEndAlarm() {
   document.getElementById('alarmModal').classList.add('show');
-  
   if (Notification.permission === "granted") {
-    new Notification("🛎️ 약속 시간 종료!", {
-      body: "약속한 게임 시간이 모두 소모되었습니다! 눈을 보호하러 보물상자를 정리해요!",
-      tag: "timer-done"
-    });
+    new Notification("🛎️ 약속 시간 종료!", { body: "약속한 게임 시간이 모두 소모되었습니다! 눈을 보호해요!" });
   }
-
-  if (navigator.vibrate) {
-    navigator.vibrate([1000, 500, 1000, 500, 1000]); 
-  }
+  if (navigator.vibrate) navigator.vibrate([1000, 500, 1000, 500, 1000]);
 
   try {
-    if (!alarmAudioContext) {
-      alarmAudioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    
+    if (!alarmAudioContext) alarmAudioContext = new (window.AudioContext || window.webkitAudioContext)();
     if (alarmIntervalId) clearInterval(alarmIntervalId);
     
     alarmIntervalId = setInterval(() => {
       if (!alarmAudioContext) return;
-      
       const osc = alarmAudioContext.createOscillator();
       const gain = alarmAudioContext.createGain();
-      
-      osc.connect(gain);
-      gain.connect(alarmAudioContext.destination);
-      
-      osc.type = 'sawtooth'; 
-      osc.frequency.setValueAtTime(950, alarmAudioContext.currentTime); 
-      osc.frequency.exponentialRampToValueAtTime(750, alarmAudioContext.currentTime + 0.2); 
-      
+      osc.connect(gain); gain.connect(alarmAudioContext.destination);
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(950, alarmAudioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(750, alarmAudioContext.currentTime + 0.2);
       gain.gain.setValueAtTime(0, alarmAudioContext.currentTime);
       gain.gain.linearRampToValueAtTime(0.35, alarmAudioContext.currentTime + 0.05);
       gain.gain.exponentialRampToValueAtTime(0.01, alarmAudioContext.currentTime + 0.35);
-      
-      osc.start(alarmAudioContext.currentTime);
-      osc.stop(alarmAudioContext.currentTime + 0.4);
+      osc.start(alarmAudioContext.currentTime); osc.stop(alarmAudioContext.currentTime + 0.4);
     }, 850);
-  } catch (e) {
-    console.warn("AudioContext 차단 발생", e);
-  }
+  } catch (e) { console.warn("Audio Context blocked"); }
 }
 
 function dismissAlarm() {
   document.getElementById('alarmModal').classList.remove('show');
-  if (alarmIntervalId) {
-    clearInterval(alarmIntervalId);
-    alarmIntervalId = null;
-  }
+  if (alarmIntervalId) { clearInterval(alarmIntervalId); alarmIntervalId = null; }
 }
 
 async function requestWakeLock() {
   if ('wakeLock' in navigator) {
-    try {
-      wakeLock = await navigator.wakeLock.request('screen');
-    } catch (err) {
-      console.warn("Wake Lock 획득 실패:", err);
-    }
+    try { wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {}
   }
 }
-
-// Release Wake Lock
 function releaseWakeLock() {
-  if (wakeLock) {
-    wakeLock.release().then(() => {
-      wakeLock = null;
-    });
-  }
+  if (wakeLock) { wakeLock.release().then(() => { wakeLock = null; }); }
 }
 
 function enableCosmicNotifications() {
-  if (!('Notification' in window)) {
-    showToast("😢 이 스마트폰 브라우저는 푸시 알람을 지원하지 않습니다.", true);
-    return;
-  }
-
+  if (!('Notification' in window)) { showToast("😢 알림을 지원하지 않는 브라우저입니다.", true); return; }
   Notification.requestPermission().then(permission => {
     if (permission === 'granted') {
-      showToast("🛎️ 우주 푸시 알림 및 진동이 성공적으로 활성화되었습니다!");
-      new Notification("🚀 우주 알림 연결 성공!", {
-        body: "약속 종료 시 완벽한 소리와 진동으로 알려드릴게요!",
-        tag: "test-notification"
-      });
+      showToast("🛎️ 우주 푸시 알림 및 진동이 활성화되었습니다!");
       if (navigator.vibrate) navigator.vibrate(200);
-    } else {
-      showToast("⚠️ 알림 권한이 거부되었습니다. 스마트폰 설정에서 승인해 주세요.", true);
     }
   });
 }
 
 function checkBankInterestAndReset() {
   const today = new Date().toDateString();
-  
-  if (!state.lastInterestCalculatedDate) {
-    state.lastInterestCalculatedDate = today;
-    updateFirestore();
-    return;
-  }
-
+  if (!state.lastInterestCalculatedDate) { state.lastInterestCalculatedDate = today; updateFirestore(); return; }
   if (state.lastInterestCalculatedDate !== today) {
     const savings = state.bankBalance || 0;
     if (savings > 0) {
       const interest = Math.max(1, Math.ceil(savings * 0.05));
       state.bankBalance = savings + interest;
-      
       state.todayEarnedCoins = (state.todayEarnedCoins || 0) + interest;
       addHistory('earn-coin', `🏦 우주 저금통 일일 복리 이자 보상 💰 +${interest}코인`, interest, '코인');
-      showToast(`🏦 우주 저금통에 밤새 복리 이자 💰+${interest}코인이 붙었습니다!`);
     }
-    state.lastInterestCalculatedDate = today;
-    updateFirestore();
+    state.lastInterestCalculatedDate = today; updateFirestore();
   }
-}
-
-// ========== INITIALIZATION ==========
-async function init() {
-  renderStars();
-
-  let activeConfig = defaultFirebaseConfig;
-
-  const savedConfigStr = localStorage.getItem('treasureBox_firebaseConfig');
-  if (savedConfigStr) {
-    try {
-      activeConfig = JSON.parse(savedConfigStr);
-    } catch(e) {}
-  }
-
-  if (activeConfig) {
-    try {
-      await initializeFirebaseDynamic(activeConfig);
-      document.getElementById('firebaseConfigInput').value = JSON.stringify(activeConfig, null, 2);
-    } catch(e) {}
-  }
-
-  let activeCode = localStorage.getItem('treasureBox_familyId');
-  if (!activeCode) {
-    activeCode = generate6DigitCode();
-    localStorage.setItem('treasureBox_familyId', activeCode);
-  }
-
-  startFirebaseSync(activeCode);
 }
 
 let loadingTimeoutId = null;
-
 function showLoading(show) {
   const overlay = document.getElementById('loadingOverlay');
   if (show) {
     overlay.classList.add('show');
     clearTimeout(loadingTimeoutId);
+    // Vercel 네트워크 환경을 고려하여 타임아웃 세션 연장처리 (8초)
     loadingTimeoutId = setTimeout(() => {
-      if (overlay.classList.contains('show')) {
-        bypassLoading();
-        showToast("⚠️ 연결 시간이 오래 걸려 오프라인 모드로 자동 전환되었습니다.", true);
-      }
+      if (overlay.classList.contains('show')) { bypassLoading(); }
     }, 8000);
   } else {
-    overlay.classList.remove('show');
-    clearTimeout(loadingTimeoutId);
+    overlay.classList.remove('show'); clearTimeout(loadingTimeoutId);
   }
 }
 
 function bypassLoading() {
-  isFirebaseActive = false;
   showLoading(false);
-  showToast("🔌 실시간 연동을 취소하고 로컬 모드로 시작합니다.", false);
-  
-  const offlineData = localStorage.getItem('treasureBox_v2_offline');
-  if (offlineData) {
-    try {
-      state = { ...state, ...JSON.parse(offlineData) };
-    } catch (e) {}
-  }
-  document.getElementById('displayFamilyCode').textContent = state.familyId + " (로컬 전용 - ⚠️ 연동에 실패함)";
-  renderAll();
+  showToast("🔌 로컬 오프라인 모드로 안전하게 진입했습니다.");
 }
 
 function checkDailyReset() {
   const today = new Date().toDateString();
   if (state.lastResetDate !== today) {
-    state.lastResetDate = today;
-    state.todayEarnedCoins = 0;
-    state.todayEarnedMinutes = 0;
+    state.lastResetDate = today; state.todayEarnedCoins = 0; state.todayEarnedMinutes = 0;
     updateFirestore();
   }
-
-  // AI Quiz Limit Reset daily
-  if (state.lastQuizDate !== today) {
-    state.aiQuizCountToday = 0;
-    state.lastQuizDate = today;
-    updateFirestore();
-  }
-
+  if (state.lastQuizDate !== today) { state.aiQuizCountToday = 0; state.lastQuizDate = today; updateFirestore(); }
   checkBankInterestAndReset();
 }
 
-// ========== UNIFIED RENDERING SYSTEM ==========
 function renderStats() {
   const timeVal = document.getElementById('timeBalance');
   const coinVal = document.getElementById('coinBalance');
   if (timeVal) timeVal.textContent = state.timeBalance;
   if (coinVal) coinVal.textContent = state.coinBalance;
 
-  // 오늘 획득한 누적 통계 표시 (신설)
-  const todayTimeEl = document.getElementById('todayEarnedTime');
-  const todayCoinEl = document.getElementById('todayEarnedCoin');
-  if (todayTimeEl) todayTimeEl.textContent = `오늘 획득: +${state.todayEarnedMinutes || 0}분`;
-  if (todayCoinEl) todayCoinEl.textContent = `오늘 획득: +${(state.todayEarnedCoins || 0).toLocaleString()}원`;
+  document.getElementById('todayEarnedTime').textContent = `오늘 획득: +${state.todayEarnedMinutes || 0}분`;
+  document.getElementById('todayEarnedCoin').textContent = `오늘 획득: +${(state.todayEarnedCoins || 0).toLocaleString()}원`;
 
-  // 우주 은행 게이지 업데이트
   const savings = state.bankBalance || 0;
   const target = state.targetGoalAmount || 13000; 
   const percent = Math.min(100, Math.round((savings / target) * 100));
   
-  const bar = document.getElementById('targetGoalBar');
-  const text = document.getElementById('targetGoalText');
-  const label = document.getElementById('bankSavingsText');
-  const displayTargetLabel = document.getElementById('displayTargetGoalText');
-
-  if (bar) bar.style.width = `${percent}%`;
-  if (text) text.textContent = `${percent}% (${savings.toLocaleString()} / ${target.toLocaleString()} 원)`;
-  if (label) label.textContent = `저금통 저금액: 💰${savings.toLocaleString()} 코인 (현금 환산: ${savings.toLocaleString()}원)`;
-  if (displayTargetLabel) displayTargetLabel.textContent = `목표: ${target.toLocaleString()}원`;
-
-  // Update AI Quiz count display
-  const quizLimitText = document.getElementById('quizLimitText');
-  if (quizLimitText) {
-    quizLimitText.textContent = `${state.aiQuizCountToday || 0} / 30회`;
-  }
-
-  // Sync targetGoalAmount in settings input
-  const goalInput = document.getElementById('targetGoalAmountInput');
-  if (goalInput && !goalInput.value) {
-    goalInput.value = target;
-  }
-
-  // Sync Gemini API Key input field (하드코딩된 API키가 우선 표시됨)
-  const keyInput = document.getElementById('geminiApiKeyInput');
-  if (keyInput) {
-    keyInput.value = state.geminiApiKey || localStorage.getItem('treasureBox_geminiApiKey') || "AIzaSyDAeUEjPBjerl_Nv9AifdchvB1ReMzTs6w";
-  }
+  if (document.getElementById('targetGoalBar')) document.getElementById('targetGoalBar').style.width = `${percent}%`;
+  if (document.getElementById('targetGoalText')) document.getElementById('targetGoalText').textContent = `${percent}% (${savings.toLocaleString()} / ${target.toLocaleString()} 원)`;
+  if (document.getElementById('bankSavingsText')) document.getElementById('bankSavingsText').textContent = `저금통 저금액: 💰${savings.toLocaleString()} 코인 (현금 환산: ${savings.toLocaleString()}원)`;
+  if (document.getElementById('displayTargetGoalText')) document.getElementById('displayTargetGoalText').textContent = `목표: ${target.toLocaleString()}원`;
+  if (document.getElementById('quizLimitText')) document.getElementById('quizLimitText').textContent = `${state.aiQuizCountToday || 0} / 30회`;
 }
 
 function updateKidName() {
-  const subHeader = document.getElementById('headerSub');
-  if (subHeader) {
-    subHeader.textContent = `${state.kidName}의 보물상자`;
-  }
-  const ki = document.getElementById('kidName');
-  if (ki) {
-    ki.value = state.kidName;
-  }
+  if (document.getElementById('headerSub')) document.getElementById('headerSub').textContent = `${state.kidName}의 보물상자`;
+  if (document.getElementById('kidName')) document.getElementById('kidName').value = state.kidName;
 }
 
 function renderAll() {
-  checkDailyReset();
-  renderStats();
-  renderMissions();
-  renderHistory();
-  updateKidName();
-  renderParentMissions();
-  renderApprovalList();
-  renderCompletedList();
+  checkDailyReset(); renderStats(); renderMissions(); renderHistory(); updateKidName(); renderParentMissions(); renderApprovalList(); renderCompletedList();
 }
 
-// ========== TABS NAVIGATION ==========
 function showTab(name) {
   stopTTS();
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (document.getElementById('section-' + name)) document.getElementById('section-' + name).classList.add('active');
+  if (document.getElementById('tab-' + name)) document.getElementById('tab-' + name).classList.add('active');
   
-  const targetSec = document.getElementById('section-' + name);
-  const targetTab = document.getElementById('tab-' + name);
-  
-  if (targetSec) targetSec.classList.add('active');
-  if (targetTab) targetTab.classList.add('active');
-  
-  // Game stop preventions
   if (name !== 'playground') {
-    stopMathDefenseGame();
-    stopMeteorDodgeGame();
-    stopBrickBreakerGame();
-    stopAlienShooterGame();
+    stopMathDefenseGame(); stopMeteorDodgeGame(); stopBrickBreakerGame(); stopAlienShooterGame();
   }
-
   renderAll();
 }
 
-// ========== CATEGORY ACCORDION LOGIC ==========
 function toggleAccordion(category) {
   accordions[category] = !accordions[category];
-  
   const content = document.getElementById(`content-${category}`);
   const arrow = document.getElementById(`arrow-${category}`);
-  
   if (accordions[category]) {
-    content.classList.remove('collapsed');
-    arrow.classList.remove('collapsed');
+    content.classList.remove('collapsed'); arrow.classList.remove('collapsed');
     content.style.maxHeight = content.scrollHeight + "px";
-  } else {
-    content.classList.add('collapsed');
-    arrow.classList.add('collapsed');
-  }
+  } else { content.classList.add('collapsed'); arrow.classList.add('collapsed'); }
 }
 
-// ========== MISSION CONTROL ==========
 function renderMissions() {
   const specialList = document.getElementById('specialMissionList');
   const regularList = document.getElementById('regularMissionList');
-  
   if (!state.missions) return;
 
-  const iconColors = { 
-    '📚':'rgba(79,195,247,.2)', '✏️':'rgba(206,147,216,.2)', '🏃':'rgba(0,212,170,.2)', 
-    '🎵':'rgba(255,183,77,.2)', '🧹':'rgba(233,69,96,.2)', '🍽️':'rgba(255,215,0,.2)', 
-    '💪':'rgba(0,212,170,.2)', '🌟':'rgba(255,215,0,.2)', '😊':'rgba(255,183,77,.2)' 
-  };
-
+  const iconColors = { '📚':'rgba(79,195,247,.2)', '✏️':'rgba(206,147,216,.2)', '🏃':'rgba(0,212,170,.2)', '🧹':'rgba(233,69,96,.2)', '😊':'rgba(255,183,77,.2)' };
   const specialMissions = state.missions.filter(m => m.repeat === 'once');
   const regularMissions = state.missions.filter(m => m.repeat === 'always' || m.repeat === 'daily');
 
   document.getElementById('specialMissionCount').textContent = specialMissions.length;
   document.getElementById('regularMissionCount').textContent = regularMissions.length;
 
-  const buildMissionHTML = (m) => {
-    let cardClass = '';
-    let btnText = '🏆';
-    let btnDisabled = '';
-    let btnClass = 'mission-complete-btn';
-    let labelPrefix = '';
-
-    if (m.status === 'pending') {
-      cardClass = 'pending';
-      btnText = '⏳ 대기';
-      btnDisabled = 'disabled';
-      btnClass += ' pending-status';
-    } else if (m.status === 'completed') {
-      cardClass = 'completed';
-      btnText = '✓';
-      btnDisabled = 'disabled';
-      labelPrefix = '✅ ';
-    }
-
+  const buildHTML = (m) => {
+    let cardClass = '', btnText = '🏆', btnDisabled = '', btnClass = 'mission-complete-btn', label = '';
+    if (m.status === 'pending') { cardClass = 'pending'; btnText = '⏳ 대기'; btnDisabled = 'disabled'; btnClass += ' pending-status'; }
+    else if (m.status === 'completed') { cardClass = 'completed'; btnText = '✓'; btnDisabled = 'disabled'; label = '✅ '; }
     return `
       <div class="mission-card ${cardClass}">
-        <div class="mission-icon-wrap" style="background:${iconColors[m.icon] || 'rgba(255,255,255,.1)'}">
-          ${m.icon}
-        </div>
+        <div class="mission-icon-wrap" style="background:${iconColors[m.icon] || 'rgba(255,255,255,.1)'}">${m.icon}</div>
         <div class="mission-info">
-          <div class="mission-name">
-            <span>${labelPrefix}${m.name}</span>
-          </div>
+          <div class="mission-name">${label}${m.name}</div>
           <div class="mission-desc">${m.desc || ''}</div>
           <div class="mission-rewards">
             ${m.timeReward ? `<span class="reward-chip time">⏰ +${m.timeReward}분</span>` : ''}
             ${m.coinReward ? `<span class="reward-chip coin">💰 +${m.coinReward}원</span>` : ''}
           </div>
         </div>
-        <button class="${btnClass}" onclick="completeMission(${m.id})" ${btnDisabled}>
-          ${btnText}
-        </button>
-      </div>
-    `;
+        <button class="${btnClass}" onclick="completeMission(${m.id})" ${btnDisabled}>${btnText}</button>
+      </div>`;
   };
 
-  if (!specialMissions.length) {
-    specialList.innerHTML = '<p style="text-align:center; color:var(--subtext); font-size:12px; padding:16px 0;">완료해야 할 특별 미션이 없습니다.</p>';
-  } else {
-    specialList.innerHTML = specialMissions.map(m => buildMissionHTML(m)).join('');
-  }
-
-  if (!regularMissions.length) {
-    regularList.innerHTML = '<p style="text-align:center; color:var(--subtext); font-size:12px; padding:16px 0;">등록된 오늘의 미션이 없습니다.</p>';
-  } else {
-    regularList.innerHTML = regularMissions.map(m => buildMissionHTML(m)).join('');
-  }
-
-  if (accordions.special) {
-    specialList.parentElement.style.maxHeight = specialList.parentElement.scrollHeight + "px";
-  }
-  if (accordions.regular) {
-    regularList.parentElement.style.maxHeight = regularList.parentElement.scrollHeight + "px";
-  }
+  specialList.innerHTML = specialMissions.length ? specialMissions.map(buildHTML).join('') : '<p style="text-align:center; color:var(--subtext); font-size:12px; padding:16px 0;">특별 미션이 없습니다.</p>';
+  regularList.innerHTML = regularMissions.length ? regularMissions.map(buildHTML).join('') : '<p style="text-align:center; color:var(--subtext); font-size:12px; padding:16px 0;">오늘의 미션이 없습니다.</p>';
 }
 
 function completeMission(id) {
-  const m = state.missions.find(x => Number(x.id) === Number(id));
+  const m = state.missions.find(x => x.id == id);
   if (!m || m.status === 'completed' || m.status === 'pending') return;
-  
   m.status = 'pending';
   addHistory('pending', `${m.name} 완료 승인 요청 전송 ⏳`, 0, '');
-  
-  updateFirestore();
-  renderAll(); 
+  updateFirestore(); renderAll();
   showToast(`⏳ 부모님께 완료 승인 요청을 보냈어요!`);
 }
 
 function approveMission(id) {
-  const m = state.missions.find(x => Number(x.id) === Number(id));
+  const m = state.missions.find(x => x.id == id);
   if (!m || m.status !== 'pending') return;
 
-  if (m.repeat === 'always' || m.repeat === 'daily') {
-    m.status = 'available';
-  } else {
-    m.status = 'completed';
-  }
+  m.status = (m.repeat === 'once') ? 'completed' : 'available';
+  state.timeBalance += (m.timeReward || 0); state.coinBalance += (m.coinReward || 0);
+  state.todayEarnedMinutes += (m.timeReward || 0); state.todayEarnedCoins += (m.coinReward || 0);
 
-  state.timeBalance += (m.timeReward || 0);
-  state.coinBalance += (m.coinReward || 0);
-  
-  // 오늘 적립액 추가
-  state.todayEarnedMinutes = (state.todayEarnedMinutes || 0) + (m.timeReward || 0);
-  state.todayEarnedCoins = (state.todayEarnedCoins || 0) + (m.coinReward || 0);
+  addHistory('earn-time', m.timeReward ? `${m.name} 승인 ⏰ +${m.timeReward}분` : '', m.timeReward, '분');
+  if (m.coinReward) addHistory('earn-coin', `${m.name} 승인 💰 +${m.coinReward}원`, m.coinReward, '코인');
 
-  const rewards = [];
-  if (m.timeReward) rewards.push(`⏰ +${m.timeReward}분`);
-  if (m.coinReward) rewards.push(`💰 +${m.coinReward}원`);
-
-  addHistory('earn-time', m.timeReward ? `${m.name} 완료 승인 ⏰ +${m.timeReward}분` : '', m.timeReward, '분');
-  if (m.coinReward) addHistory('earn-coin', `${m.name} 완료 승인 💰 +${m.coinReward}코인`, m.coinReward, '코인');
-
-  updateFirestore();
-  renderAll(); 
-  celebrate();
-  showToast(`👍 미션 완료를 승인했습니다! ${rewards.join(', ')} 적립!`);
+  updateFirestore(); renderAll(); celebrate();
+  showToast(`👍 미션 승인 완료!`);
 }
 
 function rejectMission(id) {
-  const m = state.missions.find(x => Number(x.id) === Number(id));
+  const m = state.missions.find(x => x.id == id);
   if (!m || m.status !== 'pending') return;
-
   m.status = 'available';
-  addHistory('reject', `${m.name} 완료 승인 반려 ❌`, 0, '');
-
-  updateFirestore();
-  renderAll(); 
-  showToast(`❌ 요청을 반려하여 다시 미션 수행 상태로 돌렸습니다.`);
+  addHistory('reject', `${m.name} 승인 반려 ❌`, 0, '');
+  updateFirestore(); renderAll();
+  showToast(`❌ 요청을 반려했습니다.`);
 }
 
 function revertMission(id) {
-  const m = state.missions.find(x => Number(x.id) === Number(id));
+  const m = state.missions.find(x => x.id == id);
   if (!m || m.status !== 'completed') return;
-
   m.status = 'available';
-  
   state.timeBalance = Math.max(0, state.timeBalance - (m.timeReward || 0));
   state.coinBalance = Math.max(0, state.coinBalance - (m.coinReward || 0));
-
-  state.todayEarnedMinutes = Math.max(0, (state.todayEarnedMinutes || 0) - (m.timeReward || 0));
-  state.todayEarnedCoins = Math.max(0, (state.todayEarnedCoins || 0) - (m.coinReward || 0));
-
-  addHistory('use-time', `${m.name} 완료 회수 ⏰ -${m.timeReward}분`, -m.timeReward, '분');
-  if (m.coinReward) addHistory('use-coin', `${m.name} 완료 회수 💰 -${m.coinReward}코인`, -m.coinReward, '코인');
-
-  updateFirestore();
-  renderAll(); 
-  showToast(`⏪ 완료 상태를 취소하고 적립된 보상을 회수했습니다.`);
+  updateFirestore(); renderAll();
+  showToast(`⏪ 보상을 회수했습니다.`);
 }
 
-// ========== 🚀 NEW STUDY SYSTEM: KNOWLEDGE EXPEDITION ==========
+// ========== KNOWLEDGE EXPEDITION (지식 탐험) ==========
 let currentExpeditionSubject = 'math';
 let expeditionData = null;
 let currentSlideIndex = 0;
-let expeditionAnswers = [];
 let currentExpeditionQuizIndex = 0;
 
 function selectExpeditionSubject(el, sub) {
   document.querySelectorAll('#expeditionSubject .chip').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  currentExpeditionSubject = sub;
+  el.classList.add('selected'); currentExpeditionSubject = sub;
 }
 
 async function startKnowledgeExpedition() {
   stopTTS();
-  const setupDiv = document.getElementById('expeditionSetup');
-  const activeDiv = document.getElementById('expeditionActive');
-  
-  setupDiv.style.display = 'none';
-  activeDiv.style.display = 'block';
+  document.getElementById('expeditionSetup').style.display = 'none';
+  document.getElementById('expeditionActive').style.display = 'block';
   document.getElementById('expeditionQuiz').style.display = 'none';
 
   document.getElementById('slideEmoji').textContent = "🛰️";
-  document.getElementById('slideTitle').textContent = "탐험을 시작하는 중...";
-  document.getElementById('slideContent').textContent = "조종사 지니가 지식 데이터를 안전하게 분석하는 중입니다. 5초만 기다려줘!";
+  document.getElementById('slideTitle').textContent = "지식 행성 진입 중...";
+  document.getElementById('slideContent').textContent = "재미있는 이야기를 분석해서 가져오고 있어요. 3초만 기다려줘!";
 
-  const subNames = { math: "수학 이야기", korean: "한글 및 한글 맞춤법/어휘", english: "영어 동화/단어", hanja: "한자 학습 (재미있는 유래와 모양)", science: "우주 과학 상식" };
-  const systemInstruction = `당신은 초등학생 다준이의 지식을 확장해주는 우주선 조종사 지니입니다. 선택된 과목 [${subNames[currentExpeditionSubject]}]에 관한 재미있는 학습 상식을 7살~초등학생 저학년 눈높이에 맞춰 슬라이드 3개 분량으로 다정하게 반말로 가르쳐주세요. 그 후 학습 내용을 잘 들었는지 확인하는 4지선다형 퀴즈 2문제를 이어서 아주 쉬운 난이도로 출제해 주시기 바랍니다. 모든 텍스트는 기계적이지 않고 다정하고 이야기하는 투여야 합니다.`;
-  const prompt = `다준이가 한 번에 소화할 수 있는 유익하고 재미있는 공부 이야기를 JSON 형식으로 3장 슬라이드와 퀴즈 2문제로 구성해줘.
-반드시 아래 JSON 구조로만 응답해줘! (다른 말은 절대 쓰지 마세요)
-{
-  "topic": "주제",
-  "slides": [
-    { "title": "슬라이드 제목", "content": "내용", "emoji": "아이콘" },
-    { "title": "슬라이드 제목", "content": "내용", "emoji": "아이콘" },
-    { "title": "슬라이드 제목", "content": "내용", "emoji": "아이콘" }
-  ],
-  "questions": [
-    {
-      "question": "퀴즈 문제",
-      "options": ["보기1", "보기2", "보기3", "보기4"],
-      "correctIndex": 정답번호(0, 1, 2, 3 중 하나),
-      "explanation": "정답 해설"
-    },
-    {
-      "question": "퀴즈 문제",
-      "options": ["보기1", "보기2", "보기3", "보기4"],
-      "correctIndex": 정답번호,
-      "explanation": "정답 해설"
-    }
-  ]
-}`;
-
-  const payload = {
-    contents: [{ parts: [{ text: prompt }] }],
-    systemInstruction: { parts: [{ text: systemInstruction }] },
-    generationConfig: {
-      responseMimeType: "application/json"
-    }
-  };
+  const subNames = { math: "수학", korean: "국어 어휘/맞춤법", english: "기초 영어", hanja: "한자 급수 유래", science: "우주 과학 상식" };
+  const prompt = `초등학생 눈높이에 맞춰 ${subNames[currentExpeditionSubject]}에 관한 학습 상식 슬라이드 3개와 4지선다 퀴즈 2문제를 아래 스키마에 맞춰 JSON 데이터로만 응답해줘. { "topic": "주제", "slides": [ {"title": "제목", "content": "내용", "emoji": "이모지"} ], "questions": [ {"question": "문제", "options": ["1","2","3","4"], "correctIndex": 0, "explanation": "해설"} ] }`;
 
   try {
-    const result = await callGeminiAPI(payload);
-    const jsonStr = result.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!jsonStr) throw new Error("지식 데이터를 불러오지 못했습니다.");
-    
-    expeditionData = JSON.parse(jsonStr);
-    currentSlideIndex = 0;
-    renderCurrentSlide();
-
-  } catch (err) {
-    showToast(err.message, true);
-    exitExpedition();
-  }
+    const result = await callGeminiAPI({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } });
+    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+    expeditionData = JSON.parse(text);
+    currentSlideIndex = 0; renderCurrentSlide();
+  } catch (err) { showToast("AI 엔진 로드 실패. API 키를 확인하세요.", true); exitExpedition(); }
 }
 
 function renderCurrentSlide() {
-  if (!expeditionData || !expeditionData.slides) return;
+  if (!expeditionData) return;
   const slide = expeditionData.slides[currentSlideIndex];
-  
   document.getElementById('slideEmoji').textContent = slide.emoji || "🪐";
   document.getElementById('slideTitle').textContent = `[${currentSlideIndex + 1}/3] ${slide.title}`;
   document.getElementById('slideContent').textContent = slide.content;
-
-  // Read slide aloud instantly
   speakCurrentSlide();
 
-  // Navigation button states
   document.getElementById('btnPrevSlide').disabled = currentSlideIndex === 0;
-  
-  const nextBtn = document.getElementById('btnNextSlide');
-  if (currentSlideIndex === 2) {
-    nextBtn.textContent = "확인 퀴즈 풀기! ✏️";
-    nextBtn.style.background = "var(--green)";
-  } else {
-    nextBtn.textContent = "다음 ▶";
-    nextBtn.style.background = "var(--purple)";
-  }
+  document.getElementById('btnNextSlide').textContent = currentSlideIndex === 2 ? "퀴즈 풀기! ✏️" : "다음 ▶";
 }
 
-function prevSlide() {
-  if (currentSlideIndex > 0) {
-    currentSlideIndex--;
-    renderCurrentSlide();
-  }
-}
-
+function prevSlide() { if (currentSlideIndex > 0) { currentSlideIndex--; renderCurrentSlide(); } }
 function nextSlide() {
-  stopTTS();
-  if (currentSlideIndex < 2) {
-    currentSlideIndex++;
-    renderCurrentSlide();
-  } else {
-    // Start slides quiz
+  if (currentSlideIndex < 2) { currentSlideIndex++; renderCurrentSlide(); }
+  else {
     document.getElementById('expeditionActive').style.display = 'none';
     document.getElementById('expeditionQuiz').style.display = 'block';
-    currentExpeditionQuizIndex = 0;
-    renderExpeditionQuiz();
+    currentExpeditionQuizIndex = 0; renderExpeditionQuiz();
   }
 }
-
-function speakCurrentSlide() {
-  if (!expeditionData) return;
-  const slide = expeditionData.slides[currentSlideIndex];
-  playTTS(slide.content);
-}
+function speakCurrentSlide() { if(expeditionData) playTTS(expeditionData.slides[currentSlideIndex].content); }
 
 function renderExpeditionQuiz() {
-  if (!expeditionData || !expeditionData.questions) return;
   const q = expeditionData.questions[currentExpeditionQuizIndex];
-  
   document.getElementById('expeditionQuizTitle').textContent = `🪐 지식 확인 퀴즈 (${currentExpeditionQuizIndex + 1}/2)`;
   document.getElementById('expeditionQuestion').textContent = q.question;
-  
-  const optionsDiv = document.getElementById('expeditionOptions');
-  const feedbackDiv = document.getElementById('expeditionFeedback');
-  feedbackDiv.style.display = 'none';
-
-  optionsDiv.innerHTML = q.options.map((opt, idx) => `
+  document.getElementById('expeditionFeedback').style.display = 'none';
+  document.getElementById('expeditionOptions').innerHTML = q.options.map((opt, idx) => `
     <button class="action-btn" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:white; width:100%; text-align:left; padding:12px 16px;" onclick="submitExpeditionAnswer(${idx})">
       ${idx + 1}. ${opt}
-    </button>
-  `).join('');
+    </button>`).join('');
 }
 
 function submitExpeditionAnswer(index) {
   const q = expeditionData.questions[currentExpeditionQuizIndex];
-  const feedbackDiv = document.getElementById('expeditionFeedback');
-  const optionsDiv = document.getElementById('expeditionOptions');
-
-  optionsDiv.querySelectorAll('button').forEach((btn, idx) => {
-    btn.disabled = true;
-    if (idx === q.correctIndex) {
-      btn.style.borderColor = "var(--green)";
-      btn.style.background = "rgba(0,212,170,0.15)";
-    } else if (idx === index) {
-      btn.style.borderColor = "var(--accent)";
-      btn.style.background = "rgba(233,69,96,0.15)";
-    }
-  });
-
-  feedbackDiv.style.display = 'block';
-  const rewardAmt = 10; // 정답 시 10원
-
-  if (index === q.correctIndex) {
-    feedbackDiv.style.background = "rgba(0,212,170,0.15)";
-    feedbackDiv.style.border = "1px solid var(--green)";
-    feedbackDiv.innerHTML = `
-      <strong style="color:var(--green); font-size:14px; display:block; margin-bottom:4px;">🎉 정답입니다!</strong>
-      ${q.explanation}<br><br>
-      <span style="color:var(--gold); font-weight:bold;">🚀 획득 보상: 💰+${rewardAmt}원 적립</span>
-    `;
-    
-    state.coinBalance += rewardAmt;
-    state.todayEarnedCoins = (state.todayEarnedCoins || 0) + rewardAmt;
-    addHistory('earn-coin', `🚀 지식 탐험 퀴즈 정답 💰 +${rewardAmt}코인`, rewardAmt, '코인');
-    updateFirestore();
-    renderStats();
-    celebrate();
-  } else {
-    feedbackDiv.style.background = "rgba(233,69,96,0.15)";
-    feedbackDiv.style.border = "1px solid var(--accent)";
-    feedbackDiv.innerHTML = `
-      <strong style="color:var(--accent); font-size:14px; display:block; margin-bottom:4px;">😢 아깝다! 틀렸어요!</strong>
-      ${q.explanation}
-    `;
-  }
-
-  // Next Question Button
-  const nextBtn = document.createElement('button');
-  nextBtn.className = 'submit-btn green';
-  nextBtn.style.marginTop = '12px';
+  const fb = document.getElementById('expeditionFeedback');
+  fb.style.display = 'block';
   
+  if (index === q.correctIndex) {
+    fb.innerHTML = `<span style="color:var(--green)">🎉 정답!</span><br>${q.explanation}`;
+    state.coinBalance += 10; state.todayEarnedCoins += 10;
+    addHistory('earn-coin', "🚀 지식탐험 퀴즈 정답 보상", 10, '코인');
+    updateFirestore(); renderStats(); celebrate();
+  } else { fb.innerHTML = `<span style="color:var(--accent)">😢 오답!</span><br>${q.explanation}`; }
+
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'submit-btn green'; nextBtn.style.marginTop = '12px';
   if (currentExpeditionQuizIndex === 0) {
-    nextBtn.textContent = "다음 문제 풀기 ➔";
-    nextBtn.onclick = () => {
-      currentExpeditionQuizIndex = 1;
-      renderExpeditionQuiz();
-    };
-  } else {
-    nextBtn.textContent = "지식 대탐험 완료! 🌌";
-    nextBtn.onclick = exitExpedition;
-  }
-  feedbackDiv.appendChild(nextBtn);
+    nextBtn.textContent = "다음 문제 ➔";
+    nextBtn.onclick = () => { currentExpeditionQuizIndex = 1; renderExpeditionQuiz(); };
+  } else { nextBtn.textContent = "탐험 완료 완료! 🌌"; nextBtn.onclick = exitExpedition; }
+  fb.appendChild(nextBtn);
 }
 
 function exitExpedition() {
-  stopTTS();
-  document.getElementById('expeditionSetup').style.display = 'block';
+  stopTTS(); document.getElementById('expeditionSetup').style.display = 'block';
   document.getElementById('expeditionActive').style.display = 'none';
   document.getElementById('expeditionQuiz').style.display = 'none';
-  expeditionData = null;
 }
 
-// ========== ✨ GEMINI AI REALTIME QUIZ "지니" (퀴즈 개편) ==========
+// ========== GEMINI API REALTIME CONNECTOR ==========
 let currentQuizCategory = 'math';
 let currentQuizDifficulty = 'easy';
 let currentQuizData = null;
 
-function selectQuizCategory(el, category) {
+function selectQuizCategory(el, cat) {
   document.querySelectorAll('#quizCategory .chip').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  currentQuizCategory = category;
+  el.classList.add('selected'); currentQuizCategory = cat;
 }
-
 function selectQuizDifficulty(el, diff) {
   document.querySelectorAll('#quizDifficulty .chip').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  currentQuizDifficulty = diff;
+  el.classList.add('selected'); currentQuizDifficulty = diff;
 }
 
-// 🔑 여러 최신 모델을 순차적으로 시도하도록 강화된 자동 우회 통신 엔진
 async function callGeminiAPI(payload) {
-  // 사용자가 제공한 API Key를 기본값으로 완벽히 고정 세팅
-  const apiKey = localStorage.getItem('treasureBox_geminiApiKey');
-  
-  if (!apiKey) {
-    showGeminiKeyGuideModal();
-    throw new Error("🔴 [API 키 미등록] 퀴즈 생성을 위해 부모님 설정에서 구글 Gemini API Key를 등록해 주세요!");
-  }
+  const apiKey = state.geminiApiKey || localStorage.getItem('treasureBox_geminiApiKey');
+  if (!apiKey) { showGeminiKeyGuideModal(); throw new Error("API Key empty"); }
 
-  // 구글 계정/지역 버전에 따라 지원되는 모델 이름이 다를 수 있으므로, 될 때까지 순서대로 시도합니다.
-  const modelsToTry = [
-    "gemini-2.5-flash",        // 가장 안정적인 최신 기본 버전          
-    "gemini-3.5-flash"        // 차세대 고속 버전
-  ];
+  // Vercel 인프라 다중 호환성 대응을 위해 최신 플래시 엔진 백업 풀 빌드 채택
+  const models = ["gemini-2.5-flash", "gemini-1.5-flash"];
+  let lastErr = "";
   
-  let delay = 500;
-  let lastErrorMsg = "";
-
-  for (const modelName of modelsToTry) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-    
-    for (let attempt = 0; attempt < 2; attempt++) {
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        
-        if (response.ok) {
-          return await response.json();
-        } else {
-          const errData = await response.json();
-          const errMsg = errData.error?.message || "알 수 없는 API 오류";
-          
-          // 404(모델 못 찾음) 에러면 즉시 내부 재시도 루프를 탈출하고 '다음 모델 이름'으로 넘어갑니다.
-          if (response.status === 404) {
-            lastErrorMsg = errMsg;
-            break; 
-          }
-          // 400이나 403 같은 인증/권한 에러면 더 이상 시도하지 않고 바로 화면에 에러를 띄웁니다.
-          if (response.status >= 400 && response.status < 500) {
-            throw new Error(`구글 서버 권한 거부 (${response.status} - ${modelName}): ${errMsg}`);
-          }
-        }
-      } catch (e) {
-        if (e.message.includes("구글 서버 권한 거부")) {
-          throw e; // 치명적 에러는 화면으로 즉시 올림
-        }
-        lastErrorMsg = e.message;
-      }
-      // 일시적 통신 오류 시 약간 대기 후 같은 모델로 재시도
-      await new Promise(r => setTimeout(r, delay));
-      delay *= 1.5;
-    }
+  for(const model of models) {
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+      });
+      if(res.ok) return await res.json();
+    } catch(e) { lastErr = e.message; }
   }
-  throw new Error(`모든 AI 모델 연결 실패. 구글 서버 장애이거나 호환되지 않는 키입니다. (사유: ${lastErrorMsg})`);
+  throw new Error(lastErr || "API 호출 오류");
 }
 
 async function generateAIQuiz() {
-  // Check daily limit: 30 Questions
-  if (state.aiQuizCountToday >= 30) {
-    showToast("🔴 오늘 하루 퀴즈 도전 횟수(30회)를 모두 마쳤어요! 내일 다시 풀 수 있습니다.", true);
-    return;
-  }
+  if (state.aiQuizCountToday >= 30) { showToast("🔴 하루 한도 초과!", true); return; }
+  document.getElementById('aiQuizSetup').style.display = 'none';
+  document.getElementById('aiQuizLive').style.display = 'block';
+  document.getElementById('aiQuizQuestion').textContent = "지니가 신나는 퀴즈를 출제 중입니다...";
+  document.getElementById('aiQuizOptions').innerHTML = '';
+  document.getElementById('aiQuizFeedback').style.display = 'none';
 
-  const setupDiv = document.getElementById('aiQuizSetup');
-  const liveDiv = document.getElementById('aiQuizLive');
-  const questionDiv = document.getElementById('aiQuizQuestion');
-  const optionsDiv = document.getElementById('aiQuizOptions');
-  const feedbackDiv = document.getElementById('aiQuizFeedback');
-
-  setupDiv.style.display = 'none';
-  liveDiv.style.display = 'block';
-  questionDiv.textContent = "🪐 우주조종사 지니가 기발한 퀴즈를 가져오는 중입니다...";
-  optionsDiv.innerHTML = "";
-  feedbackDiv.style.display = 'none';
-
-  const categoryNames = { math: "초등수학", korean: "국어 맞춤법 및 어휘", english: "초등 기초 영어 단어", science: "우주 과학 및 상식", hanja: "간단하고 유익한 초등 8~7급 한자" };
-  const difficultyNames = { easy: "매우 쉬운 7살 유치원생 눈높이", normal: "생각해 볼 만한 보통 난이도", hard: "창의적인 고난이도" };
-
-  const systemInstruction = `당신은 7살 다준이를 가이드하는 우주선 조종사 지니입니다. 다준이에게 재미있고 교육적인 4지선다형 객관식 퀴즈를 하나 출제해 주세요. 출제 분야는 [${categoryNames[currentQuizCategory]}] 이며, 난이도는 [${difficultyNames[currentQuizDifficulty]}] 입니다. 해설은 '조종사 지니'의 우주인 어조를 살려 반말로 아주 다정하고 상냥하고 유익하게 작성해 주세요.`;
-  const prompt = `7살 다준이가 재미있게 풀 수 있는 아주 쉬운 4지선다형 퀴즈를 JSON 구조로 1문제 생성해줘.
-반드시 아래 JSON 구조로만 응답해! (다른 말은 절대 쓰지 마세요)
-{
-  "question": "문제 내용",
-  "options": ["보기1", "보기2", "보기3", "보기4"],
-  "correctIndex": 정답번호(0, 1, 2, 3 중 하나),
-  "explanation": "정답 해설"
-}`;
-
-  const payload = {
-    contents: [{ parts: [{ text: prompt }] }],
-    systemInstruction: { parts: [{ text: systemInstruction }] },
-    // 엄격한 스키마 검사를 제거하여 400 Bad Request 에러 확률을 0%에 가깝게 낮춤
-    generationConfig: {
-      responseMimeType: "application/json"
-    }
-  };
+  const prompt = `7세~초등 저학년 수준의 [${currentQuizCategory}] 분야 [${currentQuizDifficulty}] 난이도 객관식 4지선다 문제 1개를 JSON 데이터형으로만 응답해줘. { "question": "문제", "options": ["1","2","3","4"], "correctIndex": 0, "explanation": "친절한 해설" }`;
 
   try {
-    const result = await callGeminiAPI(payload);
+    const result = await callGeminiAPI({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } });
     const jsonStr = result.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!jsonStr) throw new Error("퀴즈 데이터를 받지 못했습니다.");
-    
     currentQuizData = JSON.parse(jsonStr);
-    
-    questionDiv.textContent = currentQuizData.question;
-    optionsDiv.innerHTML = currentQuizData.options.map((opt, idx) => `
+
+    document.getElementById('aiQuizQuestion').textContent = currentQuizData.question;
+    document.getElementById('aiQuizOptions').innerHTML = currentQuizData.options.map((opt, idx) => `
       <button class="action-btn" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:white; width:100%; text-align:left; padding:12px 16px;" onclick="submitAIAnswer(${idx})">
         ${idx + 1}. ${opt}
-      </button>
-    `).join('');
-
-  } catch (err) {
-    showToast(err.message, true);
-    exitAIQuiz();
-  }
+      </button>`).join('');
+  } catch(e) { showToast("퀴즈 생성 에러 발생", true); exitAIQuiz(); }
 }
 
-function submitAIAnswer(index) {
-  if (!currentQuizData) return;
+function submitAIAnswer(idx) {
+  if(!currentQuizData) return;
+  const fb = document.getElementById('aiQuizFeedback'); fb.style.display = 'block';
+  state.aiQuizCountToday++; state.lastQuizDate = new Date().toDateString();
 
-  const feedbackDiv = document.getElementById('aiQuizFeedback');
-  const optionsDiv = document.getElementById('aiQuizOptions');
-  
-  optionsDiv.querySelectorAll('button').forEach((btn, idx) => {
-    btn.disabled = true;
-    if (idx === currentQuizData.correctIndex) {
-      btn.style.borderColor = "var(--green)";
-      btn.style.background = "rgba(0,212,170,0.15)";
-    } else if (idx === index) {
-      btn.style.borderColor = "var(--accent)";
-      btn.style.background = "rgba(233,69,96,0.15)";
-    }
-  });
-
-  // Daily count update
-  state.aiQuizCountToday = (state.aiQuizCountToday || 0) + 1;
-  state.lastQuizDate = new Date().toDateString();
-
-  const rewardAmt = 10; // 정답 = 10원, 오답 = 0원
-
-  feedbackDiv.style.display = 'block';
-  if (index === currentQuizData.correctIndex) {
-    feedbackDiv.style.background = "rgba(0,212,170,0.15)";
-    feedbackDiv.style.border = "1px solid var(--green)";
-    feedbackDiv.innerHTML = `
-      <strong style="color:var(--green); font-size:15px; display:block; margin-bottom:4px;">🎉 정답입니다!</strong>
-      ${currentQuizData.explanation}<br><br>
-      <span style="color:var(--gold); font-weight:bold;">🚀 자동 정답 보상: 💰+${rewardAmt}원 적립</span>
-    `;
-    
-    state.coinBalance += rewardAmt;
-    state.todayEarnedCoins = (state.todayEarnedCoins || 0) + rewardAmt;
-    addHistory('earn-coin', `✨ AI 지니 퀴즈 정답 💰 +${rewardAmt}코인`, rewardAmt, '코인');
-    
-    updateFirestore();
-    renderStats();
+  if(idx === currentQuizData.correctIndex) {
+    fb.innerHTML = `<span style="color:var(--green)">🎉 정답! +10원 적립</span><br>${currentQuizData.explanation}`;
+    state.coinBalance += 10; state.todayEarnedCoins += 10;
+    addHistory('earn-coin', "✨ AI 지니 퀴즈 정답 보상", 10, '코인');
     celebrate();
-  } else {
-    feedbackDiv.style.background = "rgba(233,69,96,0.15)";
-    feedbackDiv.style.border = "1px solid var(--accent)";
-    feedbackDiv.innerHTML = `
-      <strong style="color:var(--accent); font-size:15px; display:block; margin-bottom:4px;">😢 아쉬워요! 틀렸어요 (0원 적립)</strong>
-      ${currentQuizData.explanation}
-    `;
-    updateFirestore();
-    renderStats();
-  }
+  } else { fb.innerHTML = `<span style="color:var(--accent)">😢 아쉬워요! 오답</span><br>${currentQuizData.explanation}`; }
+  updateFirestore(); renderStats();
 }
 
 function exitAIQuiz() {
   document.getElementById('aiQuizSetup').style.display = 'block';
-  document.getElementById('aiQuizLive').style.display = 'none';
-  currentQuizData = null;
+  document.getElementById('aiQuizLive').style.display = 'none'; currentQuizData = null;
 }
 
-// ========== Game 1: Space Meteor Dodger (운석 피하기 게임 - 똥피하기) - 7세 맞춤 난이도 하향 ==========
-let dodgeState = {
-  active: false,
-  canvas: null,
-  ctx: null,
-  animationId: null,
-  player: { x: 140, y: 200, width: 32, height: 32, speed: 6, dx: 0 },
-  meteors: [],
-  coins: [],
-  collected: 0,
-  lives: 5, // 체력 5로 증가
-  starThreshold: 3 // 필요 코인 3개로 감소
-};
-
+// ========== MINI GAMES (7세 맞춤 가볍고 재미있는 스크립트 기반 게임 포팅) ==========
+let dodgeState = { active: false, animationId: null, player: { x: 140, y: 200, width: 32, height: 32, speed: 6, dx: 0 }, meteors: [], coins: [], collected: 0, lives: 5, starThreshold: 3 };
 function startMeteorDodgeGame() {
-  dodgeState.active = true;
-  dodgeState.collected = 0;
-  dodgeState.lives = 5; 
-  dodgeState.player.x = 140;
-  dodgeState.player.dx = 0;
-  dodgeState.meteors = [];
-  dodgeState.coins = [];
-  
+  dodgeState.active = true; dodgeState.collected = 0; dodgeState.lives = 5; dodgeState.meteors = []; dodgeState.coins = [];
   document.getElementById('meteorDodgeArea').style.display = 'block';
-  dodgeState.canvas = document.getElementById('meteorDodgeCanvas');
-  dodgeState.ctx = dodgeState.canvas.getContext('2d');
-
+  dodgeState.canvas = document.getElementById('meteorDodgeCanvas'); dodgeState.ctx = dodgeState.canvas.getContext('2d');
   if (dodgeState.animationId) cancelAnimationFrame(dodgeState.animationId);
-  gameLoopDodge();
-  updateDodgeUI();
+  gameLoopDodge(); updateDodgeUI();
 }
-
-function moveDodgeLeft(start) { dodgeState.player.dx = start ? -dodgeState.player.speed : 0; }
-function moveDodgeRight(start) { dodgeState.player.dx = start ? dodgeState.player.speed : 0; }
-
+function moveDodgeLeft(s) { dodgeState.player.dx = s ? -dodgeState.player.speed : 0; }
+function moveDodgeRight(s) { dodgeState.player.dx = s ? dodgeState.player.speed : 0; }
 function gameLoopDodge() {
   if (!dodgeState.active) return;
   const { ctx, canvas, player, meteors, coins } = dodgeState;
+  player.x = Math.max(0, Math.min(canvas.width - player.width, player.x + player.dx));
 
-  // 1. Move player
-  player.x += player.dx;
-  if (player.x < 0) player.x = 0;
-  if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+  if (Math.random() < 0.02) meteors.push({ x: Math.random() * (canvas.width - 20), y: -20, size: 16+Math.random()*12, speed: 1.5+Math.random()*2 });
+  if (Math.random() < 0.03) coins.push({ x: Math.random() * (canvas.width - 15), y: -20, size: 10, speed: 1.5+Math.random()*1.5 });
 
-  // 2. Spawn Meteors (생성 확률 감소)
-  if (Math.random() < 0.02) { 
-    meteors.push({
-      x: Math.random() * (canvas.width - 20),
-      y: -20,
-      size: 16 + Math.random() * 12,
-      speed: 1.5 + Math.random() * 2 // 떨어지는 속도 감소
-    });
-  }
-
-  // 3. Spawn Coins (코인 생성 확률 증가)
-  if (Math.random() < 0.03) { 
-    coins.push({
-      x: Math.random() * (canvas.width - 15),
-      y: -20,
-      size: 10,
-      speed: 1.5 + Math.random() * 1.5
-    });
-  }
-
-  // 4. Update Meteors
   meteors.forEach((m, idx) => {
     m.y += m.speed;
-    // Collision with player
     if (m.x < player.x + player.width && m.x + m.size > player.x && m.y < player.y + player.height && m.y + m.size > player.y) {
-      meteors.splice(idx, 1);
-      dodgeState.lives--;
-      updateDodgeUI();
-      showToast("💥 쿵! 운석에 충돌했습니다!", true);
-      if (dodgeState.lives <= 0) {
-        showToast("☠️ 우주선이 파괴되었습니다! 게임 오버.", true);
-        stopMeteorDodgeGame();
-      }
+      meteors.splice(idx, 1); dodgeState.lives--; updateDodgeUI();
+      if (dodgeState.lives <= 0) { showToast("게임 오버!", true); stopMeteorDodgeGame(); }
     }
-    // Remove offscreen
-    if (m.y > canvas.height) meteors.splice(idx, 1);
   });
 
-  // 5. Update Coins
   coins.forEach((c, idx) => {
     c.y += c.speed;
-    // Collision with player
     if (c.x < player.x + player.width && c.x + c.size > player.x && c.y < player.y + player.height && c.y + c.size > player.y) {
-      coins.splice(idx, 1);
-      dodgeState.collected++;
-      updateDodgeUI();
-      showToast("💰 스타코인 획득!");
+      coins.splice(idx, 1); dodgeState.collected++; updateDodgeUI();
       if (dodgeState.collected >= dodgeState.starThreshold) {
-        // WIN!
-        const winReward = 20; // 20코인
-        state.coinBalance += winReward;
-        state.todayEarnedCoins = (state.todayEarnedCoins || 0) + winReward;
-        addHistory('earn-coin', "🎮 운석 피하기 게임 성공 보너스 💰 +20코인", winReward, '코인');
-        updateFirestore();
-        renderStats();
-        celebrate();
-        showToast(`🏆 완벽한 조종! 💰+${winReward}코인을 적립했습니다!`);
-        stopMeteorDodgeGame();
+        state.coinBalance += 20; state.todayEarnedCoins += 20;
+        addHistory('earn-coin', "🎮 운석 피하기 성공 보상", 20, '코인');
+        updateFirestore(); renderStats(); celebrate(); stopMeteorDodgeGame();
       }
     }
-    if (c.y > canvas.height) coins.splice(idx, 1);
   });
 
-  // 6. Draw everything (FIXED: Using literal Hex color values for browser compatibility)
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Draw Player Spaceship (Accent Colored Polygon: Blue)
-  ctx.fillStyle = "#4fc3f7";
-  ctx.beginPath();
-  ctx.moveTo(player.x + player.width / 2, player.y);
-  ctx.lineTo(player.x, player.y + player.height);
-  ctx.lineTo(player.x + player.width, player.y + player.height);
-  ctx.closePath();
-  ctx.fill();
-
-  // Thruster fire (Orange)
-  ctx.fillStyle = "#e94560";
-  ctx.fillRect(player.x + player.width / 2 - 4, player.y + player.height, 8, 6 + Math.random() * 8);
-
-  // Draw Meteors (Red/Accent)
-  ctx.fillStyle = "#ff7675";
-  meteors.forEach(m => {
-    ctx.beginPath();
-    ctx.arc(m.x + m.size/2, m.y + m.size/2, m.size/2, 0, Math.PI * 2);
-    ctx.fill();
-  });
-
-  // Draw Gold Coins (Gold)
-  ctx.fillStyle = "#ffd700";
-  coins.forEach(c => {
-    ctx.beginPath();
-    ctx.arc(c.x + c.size/2, c.y + c.size/2, c.size/2, 0, Math.PI * 2);
-    ctx.fill();
-  });
-
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#4fc3f7"; ctx.fillRect(player.x, player.y, player.width, player.height);
+  ctx.fillStyle = "#ff7675"; meteors.forEach(m => { ctx.beginPath(); ctx.arc(m.x+m.size/2, m.y+m.size/2, m.size/2, 0, Math.PI*2); ctx.fill(); });
+  ctx.fillStyle = "#ffd700"; coins.forEach(c => { ctx.beginPath(); ctx.arc(c.x+c.size/2, c.y+c.size/2, c.size/2, 0, Math.PI*2); ctx.fill(); });
   dodgeState.animationId = requestAnimationFrame(gameLoopDodge);
 }
-
 function updateDodgeUI() {
   document.getElementById('dodgeCoins').textContent = `수집한 코인: ${dodgeState.collected} / ${dodgeState.starThreshold}`;
   document.getElementById('dodgeLives').textContent = `체력: ` + "❤️".repeat(Math.max(0, dodgeState.lives));
 }
+function stopMeteorDodgeGame() { dodgeState.active = false; cancelAnimationFrame(dodgeState.animationId); document.getElementById('meteorDodgeArea').style.display='none'; }
 
-// Stop Meteor Game
-function stopMeteorDodgeGame() {
-  dodgeState.active = false;
-  if (dodgeState.animationId) cancelAnimationFrame(dodgeState.animationId);
-  document.getElementById('meteorDodgeArea').style.display = 'none';
-}
-
-// ========== Game 2: Space Brick Breaker (우주 알카노이드) - 7세 맞춤 난이도 하향 ==========
-let breakerState = {
-  active: false,
-  canvas: null,
-  ctx: null,
-  animationId: null,
-  ball: { x: 160, y: 150, dx: 1.5, dy: -2, radius: 6 }, // 공 속도 감소
-  paddle: { x: 120, y: 220, width: 90, height: 10, speed: 5, dx: 0 }, // 패들 크기 60 -> 90으로 증가
-  bricks: [],
-  rows: 2, // 블록 줄 수 감소 (4 -> 2)
-  cols: 4, // 가로 블록 개수 감소 (5 -> 4)
-  lives: 5 // 체력 5로 증가
-};
-
+// 알카노이드 (블록깨기)
+let breakerState = { active: false, ball: { x: 160, y: 150, dx: 1.5, dy: -2, radius: 6 }, paddle: { x: 120, y: 220, width: 90, height: 10, speed: 5, dx: 0 }, bricks: [], rows: 2, cols: 4, lives: 5 };
 function startBrickBreakerGame() {
-  breakerState.active = true;
-  breakerState.lives = 5;
-  breakerState.ball.x = 160;
-  breakerState.ball.y = 150;
-  breakerState.ball.dx = 1.5;
-  breakerState.ball.dy = -2;
-  breakerState.paddle.x = 120;
-  breakerState.paddle.dx = 0;
-  
-  // Build bricks (블록 크기 및 여백 조정)
+  breakerState.active = true; breakerState.lives = 5; breakerState.ball.x = 160; breakerState.ball.y = 150; breakerState.ball.dx=1.5; breakerState.ball.dy=-2; breakerState.paddle.x=120; breakerState.paddle.dx=0;
   breakerState.bricks = [];
   for (let r = 0; r < breakerState.rows; r++) {
-    for (let c = 0; c < breakerState.cols; c++) {
-      breakerState.bricks.push({
-        x: c * (65 + 10) + 15,
-        y: r * (18 + 8) + 30,
-        width: 65,
-        height: 18,
-        status: 1
-      });
-    }
+    for (let c = 0; c < breakerState.cols; c++) { breakerState.bricks.push({ x: c*75+15, y: r*26+30, width: 65, height: 18, status: 1 }); }
   }
-
   document.getElementById('brickBreakerArea').style.display = 'block';
-  breakerState.canvas = document.getElementById('brickBreakerCanvas');
-  breakerState.ctx = breakerState.canvas.getContext('2d');
-
-  if (breakerState.animationId) cancelAnimationFrame(breakerState.animationId);
-  gameLoopBreaker();
-  updateBreakerUI();
+  breakerState.canvas = document.getElementById('brickBreakerCanvas'); breakerState.ctx = breakerState.canvas.getContext('2d');
+  gameLoopBreaker(); updateBreakerUI();
 }
-
-function moveBreakerLeft(start) { breakerState.paddle.dx = start ? -breakerState.paddle.speed : 0; }
-function moveBreakerRight(start) { breakerState.paddle.dx = start ? breakerState.paddle.speed : 0; }
-
+function moveBreakerLeft(s) { breakerState.paddle.dx = s ? -breakerState.paddle.speed : 0; }
+function moveBreakerRight(s) { breakerState.paddle.dx = s ? breakerState.paddle.speed : 0; }
 function gameLoopBreaker() {
   if (!breakerState.active) return;
   const { ctx, canvas, ball, paddle, bricks } = breakerState;
+  paddle.x = Math.max(0, Math.min(canvas.width - paddle.width, paddle.x + paddle.dx));
+  ball.x += ball.dx; ball.y += ball.dy;
 
-  // Move paddle
-  paddle.x += paddle.dx;
-  if (paddle.x < 0) paddle.x = 0;
-  if (paddle.x > canvas.width - paddle.width) paddle.x = canvas.width - paddle.width;
-
-  // Move ball
-  ball.x += ball.dx;
-  ball.y += ball.dy;
-
-  // Ball & Wall bouncing
-  if (ball.x + ball.dx > canvas.width - ball.radius || ball.x + ball.dx < ball.radius) {
-    ball.dx = -ball.dx;
-  }
-  if (ball.y + ball.dy < ball.radius) {
-    ball.dy = -ball.dy;
-  } else if (ball.y + ball.dy > canvas.height - ball.radius - 12) {
-    // Paddle hits ball
-    if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
-      ball.dy = -ball.dy;
-    } else if (ball.y > canvas.height) {
-      // Lose life
-      breakerState.lives--;
-      updateBreakerUI();
-      showToast("❤️ 볼을 떨어트렸습니다!", true);
-      if (breakerState.lives <= 0) {
-        showToast("💀 남은 기회가 없습니다. 게임 오버!", true);
-        stopBrickBreakerGame();
-        return;
-      } else {
-        ball.x = 160;
-        ball.y = 150;
-        ball.dx = 1.5;
-        ball.dy = -2;
-      }
+  if (ball.x < ball.radius || ball.x > canvas.width - ball.radius) ball.dx = -ball.dx;
+  if (ball.y < ball.radius) ball.dy = -ball.dy;
+  else if (ball.y > canvas.height - ball.radius - 12) {
+    if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) ball.dy = -ball.dy;
+    else if (ball.y > canvas.height) {
+      breakerState.lives--; updateBreakerUI();
+      if(breakerState.lives <= 0) { stopBrickBreakerGame(); }
+      else { ball.x=160; ball.y=150; ball.dx=1.5; ball.dy=-2; }
     }
   }
 
-  // Bricks collision
-  let activeCount = 0;
+  let remain = 0;
   bricks.forEach(b => {
-    if (b.status === 1) {
-      activeCount++;
-      if (ball.x > b.x && ball.x < b.x + b.width && ball.y > b.y && ball.y < b.y + b.height) {
-        ball.dy = -ball.dy;
-        b.status = 0;
-        showToast("🧱 블록 파괴!");
-      }
+    if(b.status === 1) {
+      remain++;
+      if (ball.x > b.x && ball.x < b.x + b.width && ball.y > b.y && ball.y < b.y + b.height) { ball.dy = -ball.dy; b.status = 0; }
     }
   });
 
-  const totalBricks = breakerState.rows * breakerState.cols;
-  const percent = Math.round(((totalBricks - activeCount) / totalBricks) * 100);
-  document.getElementById('breakerScore').textContent = `파괴율: ${percent}%`;
-
-  if (activeCount === 0) {
-    // Game clear
-    const clearReward = 30; // 30코인
-    state.coinBalance += clearReward;
-    state.todayEarnedCoins = (state.todayEarnedCoins || 0) + clearReward;
-    addHistory('earn-coin', "🎮 우주 블록 깨기 완수 보상 💰 +30코인", clearReward, '코인');
-    updateFirestore();
-    renderStats();
-    celebrate();
-    showToast(`🏆 블록 전체 격파 성공! 💰+${clearReward}코인 적립!`);
-    stopBrickBreakerGame();
-    return;
+  if(remain === 0) {
+    state.coinBalance += 30; state.todayEarnedCoins += 30;
+    addHistory('earn-coin', "🎮 우주 블록 깨기 완수 보상", 30, '코인');
+    updateFirestore(); renderStats(); celebrate(); stopBrickBreakerGame(); return;
   }
 
-  // Draw everything (FIXED: Literal hex colors used instead of CSS vars)
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Ball (Purple)
-  ctx.fillStyle = "#ce93d8";
-  ctx.beginPath();
-  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Paddle (Green)
-  ctx.fillStyle = "#00d4aa";
-  ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
-
-  // Bricks (Blue)
-  bricks.forEach(b => {
-    if (b.status === 1) {
-      ctx.fillStyle = "#4fc3f7";
-      ctx.fillRect(b.x, b.y, b.width, b.height);
-      ctx.strokeStyle = "rgba(11,21,40,0.6)";
-      ctx.strokeRect(b.x, b.y, b.width, b.height);
-    }
-  });
-
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#ce93d8"; ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = "#00d4aa"; ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+  ctx.fillStyle = "#4fc3f7"; bricks.forEach(b => { if(b.status===1) ctx.fillRect(b.x, b.y, b.width, b.height); });
   breakerState.animationId = requestAnimationFrame(gameLoopBreaker);
 }
+function updateBreakerUI() { document.getElementById('breakerLives').textContent = `남은 기회: ` + "❤️".repeat(Math.max(0, breakerState.lives)); }
+function stopBrickBreakerGame() { breakerState.active = false; cancelAnimationFrame(breakerState.animationId); document.getElementById('brickBreakerArea').style.display='none'; }
 
-function updateBreakerUI() {
-  document.getElementById('breakerLives').textContent = `남은 기회: ` + "❤️".repeat(Math.max(0, breakerState.lives));
-}
-
-function stopBrickBreakerGame() {
-  breakerState.active = false;
-  if (breakerState.animationId) cancelAnimationFrame(breakerState.animationId);
-  document.getElementById('brickBreakerArea').style.display = 'none';
-}
-
-// ========== Game 3: 🔫 Space Shooter (외계인 침공 격추 작전) - 7세 맞춤 난이도 하향 ==========
-let shooterState = {
-  active: false,
-  canvas: null,
-  ctx: null,
-  animationId: null,
-  player: { x: 140, y: 210, width: 30, height: 16, speed: 6, dx: 0 },
-  lasers: [],
-  aliens: [],
-  score: 0,
-  lives: 5, // 체력 증가
-  targetCount: 10, // 목표 10마리로 하향
-  laserCooldown: 0
-};
-
+// 외계인 침공 격추 (Space Shooter)
+let shooterState = { active: false, player: { x: 140, y: 210, width: 30, height: 16, speed: 6, dx: 0 }, lasers: [], aliens: [], score: 0, lives: 5, targetCount: 10, laserCooldown: 0 };
 function startAlienShooterGame() {
-  shooterState.active = true;
-  shooterState.score = 0;
-  shooterState.lives = 5;
-  shooterState.player.x = 140;
-  shooterState.player.dx = 0;
-  shooterState.lasers = [];
-  shooterState.aliens = [];
-  shooterState.laserCooldown = 0;
-
+  shooterState.active = true; shooterState.score = 0; shooterState.lives = 5; shooterState.lasers = []; shooterState.aliens = [];
   document.getElementById('alienShooterArea').style.display = 'block';
-  shooterState.canvas = document.getElementById('alienShooterCanvas');
-  shooterState.ctx = shooterState.canvas.getContext('2d');
-
-  if (shooterState.animationId) cancelAnimationFrame(shooterState.animationId);
-  gameLoopShooter();
-  updateShooterUI();
+  shooterState.canvas = document.getElementById('alienShooterCanvas'); shooterState.ctx = shooterState.canvas.getContext('2d');
+  gameLoopShooter(); updateShooterUI();
 }
-
-function moveShooterLeft(start) { shooterState.player.dx = start ? -shooterState.player.speed : 0; }
-function moveShooterRight(start) { shooterState.player.dx = start ? shooterState.player.speed : 0; }
-
+function moveShooterLeft(s) { shooterState.player.dx = s ? -shooterState.player.speed : 0; }
+function moveShooterRight(s) { shooterState.player.dx = s ? shooterState.player.speed : 0; }
 function gameLoopShooter() {
-  if (!shooterState.active) return;
+  if(!shooterState.active) return;
   const { ctx, canvas, player, lasers, aliens } = shooterState;
+  player.x = Math.max(0, Math.min(canvas.width - player.width, player.x + player.dx));
 
-  // 1. Move Player
-  player.x += player.dx;
-  if (player.x < 0) player.x = 0;
-  if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+  if (shooterState.laserCooldown > 0) shooterState.laserCooldown--;
+  else { lasers.push({ x: player.x+player.width/2-2, y: player.y, width: 4, height: 10, speed: 5 }); shooterState.laserCooldown = 12; }
 
-  // 2. Fire Laser automatically (Cooldown) - 연사 속도 빠르게 변경
-  if (shooterState.laserCooldown > 0) {
-    shooterState.laserCooldown--;
-  } else {
-    lasers.push({
-      x: player.x + player.width / 2 - 2,
-      y: player.y,
-      width: 4,
-      height: 10,
-      speed: 5
-    });
-    shooterState.laserCooldown = 10; // 연사 속도 향상
-  }
+  if(Math.random() < 0.02) aliens.push({ x: Math.random()*(canvas.width-20), y: -20, width: 18, height: 14, speed: 1 });
 
-  // 3. Spawn Aliens - 생성 빈도 대폭 하향
-  if (Math.random() < 0.015) {
-    aliens.push({
-      x: Math.random() * (canvas.width - 20),
-      y: -20,
-      width: 18,
-      height: 14,
-      speed: 0.8 + Math.random() * 0.8 // 내려오는 속도 대폭 하향
-    });
-  }
-
-  // 4. Update Lasers
-  lasers.forEach((l, lIdx) => {
-    l.y -= l.speed;
-    if (l.y < 0) lasers.splice(lIdx, 1);
-  });
-
-  // 5. Update Aliens
-  aliens.forEach((a, aIdx) => {
+  lasers.forEach((l, li) => { l.y -= l.speed; if(l.y < 0) lasers.splice(li, 1); });
+  aliens.forEach((a, ai) => {
     a.y += a.speed;
-
-    // Hit bottom boundary
-    if (a.y > canvas.height) {
-      aliens.splice(aIdx, 1);
-      shooterState.lives--;
-      updateShooterUI();
-      showToast("👽 침공 발생! 보호막이 감소했습니다.", true);
-      if (shooterState.lives <= 0) {
-        showToast("💀 외계 세력에 은하수를 빼앗겼습니다. 게임오버!", true);
-        stopAlienShooterGame();
-        return;
-      }
-    }
-
-    // Hit by Lasers
-    lasers.forEach((l, lIdx) => {
+    if(a.y > canvas.height) { aliens.splice(ai,1); shooterState.lives--; updateShooterUI(); if(shooterState.lives<=0) stopAlienShooterGame(); }
+    
+    lasers.forEach((l, li) => {
       if (l.x < a.x + a.width && l.x + l.width > a.x && l.y < a.y + a.height && l.y + l.height > a.y) {
-        // Destroy
-        aliens.splice(aIdx, 1);
-        lasers.splice(lIdx, 1);
-        shooterState.score++;
-        updateShooterUI();
-        showToast("💥 격추 성공!");
-
-        if (shooterState.score >= shooterState.targetCount) {
-          // Win!
-          const shooterReward = 25; 
-          state.coinBalance += shooterReward;
-          state.todayEarnedCoins = (state.todayEarnedCoins || 0) + shooterReward;
-          addHistory('earn-coin', "🎮 외계인 격추 대승리 보상 💰 +25코인", shooterReward, '코인');
-          updateFirestore();
-          renderStats();
-          celebrate();
-          showToast(`🏆 지구 수호 성공! 보너스 💰+${shooterReward}코인 적립!`);
-          stopAlienShooterGame();
+        aliens.splice(ai, 1); lasers.splice(li, 1); shooterState.score++; updateShooterUI();
+        if(shooterState.score >= shooterState.targetCount) {
+          state.coinBalance += 25; state.todayEarnedCoins += 25;
+          addHistory('earn-coin', "🎮 외계인 대격추 승리", 25, '코인');
+          updateFirestore(); renderStats(); celebrate(); stopAlienShooterGame();
         }
       }
     });
   });
 
-  // 6. Draw (Literal Colors used)
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Player ship (Neon Blue Polygon)
-  ctx.fillStyle = "#4fc3f7";
-  ctx.beginPath();
-  ctx.moveTo(player.x + player.width/2, player.y);
-  ctx.lineTo(player.x, player.y + player.height);
-  ctx.lineTo(player.x + player.width, player.y + player.height);
-  ctx.closePath();
-  ctx.fill();
-
-  // Lasers (Bright Green)
-  ctx.fillStyle = "#00d4aa";
-  lasers.forEach(l => {
-    ctx.fillRect(l.x, l.y, l.width, l.height);
-  });
-
-  // Aliens (Neon Pink)
-  ctx.fillStyle = "#e94560";
-  aliens.forEach(a => {
-    ctx.fillRect(a.x, a.y, a.width, a.height);
-    // Draw tiny alien eyes (Yellow)
-    ctx.fillStyle = "#ffd700";
-    ctx.fillRect(a.x + 3, a.y + 4, 3, 3);
-    ctx.fillRect(a.x + 12, a.y + 4, 3, 3);
-    ctx.fillStyle = "#e94560"; 
-  });
-
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = "#4fc3f7"; ctx.fillRect(player.x, player.y, player.width, player.height);
+  ctx.fillStyle = "#00d4aa"; lasers.forEach(l => ctx.fillRect(l.x, l.y, l.width, l.height));
+  ctx.fillStyle = "#e94560"; aliens.forEach(a => ctx.fillRect(a.x, a.y, a.width, a.height));
   shooterState.animationId = requestAnimationFrame(gameLoopShooter);
 }
-
 function updateShooterUI() {
   document.getElementById('shooterScore').textContent = `처치한 외계인: ${shooterState.score} / ${shooterState.targetCount}`;
   document.getElementById('shooterLives').textContent = `보호막 체력: ` + "❤️".repeat(Math.max(0, shooterState.lives));
 }
+function stopAlienShooterGame() { shooterState.active = false; cancelAnimationFrame(shooterState.animationId); document.getElementById('alienShooterArea').style.display='none'; }
 
-function stopAlienShooterGame() {
-  shooterState.active = false;
-  if (shooterState.animationId) cancelAnimationFrame(shooterState.animationId);
-  document.getElementById('alienShooterArea').style.display = 'none';
-}
-
-// ========== Game 4: ☄️ MINI GAME 4: MATH DEFENSE ENGINE - 7세 맞춤 난이도 하향 ==========
-let defenseState = {
-  active: false,
-  answer: 0,
-  score: 0,
-  lives: 5, // 체력 5로 증가
-  difficulty: 'easy'
-};
-
+// 사칙연산 디펜스
+let defenseState = { active: false, answer: 0, score: 0, lives: 5, difficulty: 'easy' };
 function setDefenseDifficulty(diff) {
   defenseState.difficulty = diff;
-  document.querySelectorAll('#section-playground .action-card:nth-child(5) .chip').forEach(c => {
-    c.classList.remove('selected');
-  });
+  document.querySelectorAll('#section-playground .action-card:nth-child(5) .chip').forEach(c => c.classList.remove('selected'));
   document.getElementById(`defense-${diff}`).classList.add('selected');
 }
-
 function startMathDefenseGame() {
-  defenseState.active = true;
-  defenseState.score = 0;
-  defenseState.lives = 5;
+  defenseState.active = true; defenseState.score = 0; defenseState.lives = 5;
   document.getElementById('mathDefenseArea').style.display = 'block';
-  generateDefenseQuestion();
-  updateDefenseUI();
+  generateDefenseQuestion(); updateDefenseUI();
 }
-
 function generateDefenseQuestion() {
-  let num1, num2, op;
-  if (defenseState.difficulty === 'easy') {
-    // 쉬움: 아주 쉬운 1자리 덧셈
-    num1 = Math.floor(Math.random() * 9) + 1;
-    num2 = Math.floor(Math.random() * 9) + 1;
-    op = '+';
-    defenseState.answer = num1 + num2;
-  } else if (defenseState.difficulty === 'medium') {
-    // 보통: 1자리수 뺄셈 (결과값이 음수가 나오지 않게 큰수-작은수)
-    num1 = Math.floor(Math.random() * 6) + 5; // 5~10
-    num2 = Math.floor(Math.random() * 4) + 1; // 1~4
-    op = '-';
-    defenseState.answer = num1 - num2;
-  } else {
-    // 어려움: 10이 넘는 약간 큰수 더하기
-    num1 = Math.floor(Math.random() * 6) + 10;
-    num2 = Math.floor(Math.random() * 9) + 1;
-    op = '+';
-    defenseState.answer = num1 + num2;
-  }
-
-  document.getElementById('defenseTarget').textContent = `${num1} ${op} ${num2} = ?`;
-  document.getElementById('defenseInput').value = '';
-  document.getElementById('defenseInput').focus();
+  let n1 = Math.floor(Math.random()*9)+1, n2 = Math.floor(Math.random()*9)+1;
+  document.getElementById('defenseTarget').textContent = `${n1} + ${n2} = ?`;
+  defenseState.answer = n1 + n2; document.getElementById('defenseInput').value = '';
 }
-
 function submitDefenseAnswer() {
-  if (!defenseState.active) return;
+  if(!defenseState.active) return;
   const val = parseInt(document.getElementById('defenseInput').value);
-  if (isNaN(val)) return;
-
-  if (val === defenseState.answer) {
+  if(val === defenseState.answer) {
     defenseState.score++;
-    showToast("☄️ 피격! 운석 파괴 성공!");
-    if (defenseState.score >= 3) { // 3개 맞추면 성공
-      // Game Win!
-      const winReward = 20; 
-      state.coinBalance += winReward;
-      state.todayEarnedCoins = (state.todayEarnedCoins || 0) + winReward;
-      addHistory('earn-coin', "🎮 사칙연산 디펜스 3회 완수 보너스 💰 +20코인", winReward, '코인');
-      updateFirestore();
-      renderStats();
-      celebrate();
-      showToast(`🏆 우주정거장 방어 성공! 보상 💰+${winReward}코인 적립!`);
-      stopMathDefenseGame();
-      return;
-    }
-    generateDefenseQuestion();
-  } else {
-    defenseState.lives--;
-    showToast("🚨 오답! 정거장이 공격받았습니다!", true);
-    if (defenseState.lives <= 0) {
-      showToast("💀 정거장이 파괴되었습니다! 게임 오버.", true);
-      stopMathDefenseGame();
-      return;
-    }
-    generateDefenseQuestion();
-  }
+    if(defenseState.score >= 3) {
+      state.coinBalance += 20; state.todayEarnedCoins += 20;
+      addHistory('earn-coin', "🎮 사칙연산 디펜스 성공 보상", 20, '코인');
+      updateFirestore(); renderStats(); celebrate(); stopMathDefenseGame(); return;
+    } generateDefenseQuestion();
+  } else { defenseState.lives--; if(defenseState.lives<=0) stopMathDefenseGame(); else generateDefenseQuestion(); }
   updateDefenseUI();
 }
-
 function updateDefenseUI() {
-  document.getElementById('defenseScore').textContent = `스코어: ${defenseState.score} / 3`; // 목표 3
-  const hearts = "❤️".repeat(Math.max(0, defenseState.lives)) + "🖤".repeat(Math.max(0, 5 - defenseState.lives));
-  document.getElementById('defenseLives').textContent = `정거장 체력: ${hearts}`;
+  document.getElementById('defenseScore').textContent = `스코어: ${defenseState.score} / 3`;
+  document.getElementById('defenseLives').textContent = `정거장 체력: ` + "❤️".repeat(Math.max(0, defenseState.lives));
 }
-
-function pressDefensePad(key) {
+function pressDefensePad(k) {
   const inp = document.getElementById('defenseInput');
-  if (key === 'clear') {
-    inp.value = '';
-  } else if (key === 'back') {
-    inp.value = inp.value.slice(0, -1);
-  } else {
-    inp.value += key;
-  }
+  if(k==='clear') inp.value=''; else if(k==='back') inp.value=inp.value.slice(0,-1); else inp.value+=k;
 }
+function stopMathDefenseGame() { defenseState.active=false; document.getElementById('mathDefenseArea').style.display='none'; }
 
-function stopMathDefenseGame() {
-  defenseState.active = false;
-  document.getElementById('mathDefenseArea').style.display = 'none';
-}
-
-// ========== 🏦 COSMIC BANK OPERATIONS ==========
+// ========== BANK & EXCHANGE ==========
 async function depositToBank() {
   const amt = parseInt(document.getElementById('depositAmount').value);
-  if (!amt || amt <= 0) { showToast("저금할 코인 액수를 정확하게 입력하세요!", true); return; }
-  if (amt > state.coinBalance) { showToast("잔여 코인이 부족합니다. 😢", true); return; }
+  if (!amt || amt <= 0 || amt > state.coinBalance) { showToast("코인이 부족하거나 잘못된 액수입니다.", true); return; }
+  const ok = await showConfirm("🏦 은행 저금", `💰 ${amt}코인을 저금통에 저축할까요?`);
+  if (!ok) return;
 
-  const confirmResult = await showConfirm(
-    "🏦 은행 저금", 
-    `💰 <strong>${amt} 코인</strong>을 최종 꿈 저금통에 저축할까요?<br>저축 시 복리 5% 이자 혜택이 매일 부여됩니다.`
-  );
-  if (!confirmResult) return;
-
-  state.coinBalance -= amt;
-  state.bankBalance = (state.bankBalance || 0) + amt;
-
-  addHistory('use-coin', `🏦 우주 저금통 예치 💰 -${amt}코인`, -amt, '코인');
-  
-  document.getElementById('depositAmount').value = '';
-  updateFirestore();
-  renderAll();
-  showToast(`🏦 저금통에 ${amt}코인을 안전하게 저금했습니다!`);
+  state.coinBalance -= amt; state.bankBalance = (state.bankBalance || 0) + amt;
+  addHistory('use-coin', `🏦 우주 저금통 예치`, -amt, '코인');
+  document.getElementById('depositAmount').value = ''; updateFirestore(); renderAll();
 }
 
 async function withdrawFromBank() {
   const amt = parseInt(document.getElementById('withdrawAmount').value);
-  if (!amt || amt <= 0) { showToast("출금할 코인 액수를 입력하세요!", true); return; }
-  if (amt > (state.bankBalance || 0)) { showToast("저금통 잔액이 부족합니다!", true); return; }
+  if (!amt || amt <= 0 || amt > (state.bankBalance || 0)) { showToast("저금통 잔액이 부족합니다.", true); return; }
+  const ok = await showConfirm("🏦 은행 출금", `저금통에서 💰 ${amt}코인을 출금할까요?`);
+  if (!ok) return;
 
-  const confirmResult = await showConfirm(
-    "🏦 은행 출금", 
-    `저금통에서 💰 <strong>${amt} 코인</strong>을 출금하여 사용 잔액으로 돌릴까요?`
-  );
-  if (!confirmResult) return;
-
-  state.bankBalance -= amt;
-  state.coinBalance += amt;
-
-  addHistory('earn-coin', `🏦 우주 저금통 출금 💰 +${amt}코인`, amt, '코인');
-
-  document.getElementById('withdrawAmount').value = '';
-  updateFirestore();
-  renderAll();
-  showToast(`🏦 저금통에서 ${amt}코인을 꺼냈습니다.`);
+  state.bankBalance -= amt; state.coinBalance += amt;
+  addHistory('earn-coin', `🏦 우주 저금통 출금`, amt, '코인');
+  document.getElementById('withdrawAmount').value = ''; updateFirestore(); renderAll();
 }
 
-// ========== 💱 EXCHANGE STATION (10분당 100코인 고정 환율) ==========
 async function convertTimeToCoin() {
-  if (state.timeBalance < 10) {
-    showToast("환전할 수 있는 시간(최소 10분)이 부족합니다! 😢", true);
-    return;
-  }
-
-  const confirmResult = await showConfirm(
-    "💱 시간 ➔ 코인 환전", 
-    "보유하신 게임 시간 ⏰ <strong>10분</strong>을 사용해<br>💰 <strong>100코인</strong>으로 환전하시겠습니까?"
-  );
-  if (!confirmResult) return;
-
-  state.timeBalance -= 10;
-  state.coinBalance += 100;
-  
-  state.todayEarnedCoins = (state.todayEarnedCoins || 0) + 100;
-
-  addHistory('use-time', "💱 환전소 시간 소모 ⏰ -10분", -10, '분');
-  addHistory('earn-coin', "💱 환전소 코인 획득 💰 +100코인", 100, '코인');
-
-  updateFirestore();
-  renderAll();
-  showToast("💱 시간 ➔ 코인 환전 완료!");
+  if (state.timeBalance < 10) { showToast("최소 10분이 필요합니다.", true); return; }
+  const ok = await showConfirm("💱 시간 ➔ 코인 환전", "⏰ 10분을 소모하여 💰 100코인으로 바꿀까요?");
+  if (!ok) return;
+  state.timeBalance -= 10; state.coinBalance += 100; state.todayEarnedCoins += 100;
+  addHistory('use-time', "💱 환전소 시간 소모", -10, '분'); addHistory('earn-coin', "💱 환전소 코인 획득", 100, '코인');
+  updateFirestore(); renderAll();
 }
 
 async function convertCoinToTime() {
-  if (state.coinBalance < 100) {
-    showToast("환전할 수 있는 코인(최소 100개)이 부족합니다! 😢", true);
-    return;
-  }
-
-  const confirmResult = await showConfirm(
-    "💱 코인 ➔ 시간 환전", 
-    "보유하신 코인 💰 <strong>100개</strong>를 사용해<br>⏰ <strong>10분</strong> 게임 시간으로 환전하시겠습니까?"
-  );
-  if (!confirmResult) return;
-
-  state.coinBalance -= 100;
-  state.timeBalance += 10;
-  
-  state.todayEarnedMinutes = (state.todayEarnedMinutes || 0) + 10;
-
-  addHistory('use-coin', "💱 환전소 코인 소모 💰 -100코인", -100, '코인');
-  addHistory('earn-time', "💱 환전소 시간 획득 ⏰ +10분", 10, '분');
-
-  updateFirestore();
-  renderAll();
-  showToast("💱 코인 ➔ 시간 환전 완료!");
+  if (state.coinBalance < 100) { showToast("최소 100코인이 필요합니다.", true); return; }
+  const ok = await showConfirm("💱 코인 ➔ 시간 환전", "💰 100코인을 소모하여 ⏰ 10분으로 바꿀까요?");
+  if (!ok) return;
+  state.coinBalance -= 100; state.timeBalance += 10; state.todayEarnedMinutes += 10;
+  addHistory('use-coin', "💱 환전소 코인 소모", -100, '코인'); addHistory('earn-time', "💱 환전소 시간 획득", 10, '분');
+  updateFirestore(); renderAll();
 }
 
-// ========== USE BALANCES ==========
+// ========== BALANCES USE ==========
 function setTimeQuick(v) { document.getElementById('useTimeInput').value = v; }
-
 function useTime() {
   const v = parseInt(document.getElementById('useTimeInput').value);
-  if (!v || v <= 0) { showToast('분을 정확히 입력하세요!', true); return; }
-  if (v > state.timeBalance) { showToast('게임 시간이 부족해요! 😢', true); return; }
-  
-  state.timeBalance -= v;
-  addHistory('use-time', `게임 시간 사용 -${v}분`, -v, '분');
-  
-  startTimer(v);
-  
-  updateFirestore();
-  renderAll(); 
+  if (!v || v <= 0 || v > state.timeBalance) { showToast('게임 시간이 부족해요!', true); return; }
+  state.timeBalance -= v; addHistory('use-time', `게임 시간 사용 -${v}분`, -v, '분');
+  startTimer(v); updateFirestore(); renderAll();
   document.getElementById('useTimeInput').value = '';
 }
-
 function useCoin() {
   const v = parseInt(document.getElementById('useCoinInput').value);
-  if (!v || v <= 0) { showToast('코인 수를 입력하세요!', true); return; }
-  if (v > state.coinBalance) { showToast('코인이 부족해요! 😢', true); return; }
-  
-  state.coinBalance -= v;
-  addHistory('use-coin', `코인 사용 -${v}코인`, -v, '코인');
-  
-  updateFirestore();
-  renderAll(); 
-  document.getElementById('useCoinInput').value = '';
-  showToast(`💸 ${v}코인 사용 완료!`);
+  if (!v || v <= 0 || v > state.coinBalance) { showToast('코인이 부족해요!', true); return; }
+  state.coinBalance -= v; addHistory('use-coin', `코인 사용 -${v}코인`, -v, '코인');
+  updateFirestore(); renderAll(); document.getElementById('useCoinInput').value = '';
+  showToast(`💸 사용 완료!`);
 }
 
-// ========== NEW FEATURE: SAVE TARGET GOAL AMOUNT (FIXED) ==========
 function saveTargetGoalAmount() {
   const inputAmt = parseInt(document.getElementById('targetGoalAmountInput').value);
-  if (!inputAmt || inputAmt <= 0) {
-    showToast("정확한 금액을 설정해 주세요!", true);
-    return;
-  }
-  
-  state.targetGoalAmount = inputAmt;
-  updateFirestore();
-  renderStats();
-  showToast(`💾 꿈 저금통의 목표 금액을 💰${inputAmt.toLocaleString()}원으로 변경 완료했습니다!`);
+  if(!inputAmt || inputAmt <= 0) return;
+  state.targetGoalAmount = inputAmt; updateFirestore(); renderStats();
+  showToast(`💾 목표 변경 완료!`);
 }
 
-// ========== NEW FEATURE: SAVE GEMINI API KEY LOGIC ==========
 function saveGeminiApiKey() {
   const key = document.getElementById('geminiApiKeyInput').value.trim();
-  if (!key) {
-    showToast("API 키를 입력해주세요!", true);
-    return;
-  }
-  state.geminiApiKey = key;
-  localStorage.setItem('treasureBox_geminiApiKey', key);
-  updateFirestore();
-  renderStats();
-  showToast("🔑 Gemini API Key가 안전하게 저장 및 동기화되었습니다!");
+  if(!key) return;
+  state.geminiApiKey = key; localStorage.setItem('treasureBox_geminiApiKey', key);
+  updateFirestore(); renderStats(); showToast("🔑 키 동기화 완료!");
 }
-
 function saveGeminiApiKeyFromModal() {
   const key = document.getElementById('modalGeminiApiKeyInput').value.trim();
-  if (!key) {
-    showToast("API 키를 입력해주세요!", true);
-    return;
-  }
-  state.geminiApiKey = key;
-  localStorage.setItem('treasureBox_geminiApiKey', key);
-  updateFirestore();
-  renderStats();
-  closeGeminiKeyGuideModal();
-  showToast("🔑 API 키가 연결되었습니다! 이제 초고속 AI 퀴즈가 활성화됩니다.");
+  if(!key) return;
+  state.geminiApiKey = key; localStorage.setItem('treasureBox_geminiApiKey', key);
+  updateFirestore(); renderStats(); closeGeminiKeyGuideModal(); showToast("🔑 인공지능 연결 성공!");
 }
+function showGeminiKeyGuideModal() { document.getElementById('geminiKeyGuideModal').classList.add('show'); }
+function closeGeminiKeyGuideModal() { document.getElementById('geminiKeyGuideModal').classList.remove('show'); }
 
-function showGeminiKeyGuideModal() {
-  document.getElementById('modalGeminiApiKeyInput').value = "";
-  document.getElementById('geminiKeyGuideModal').classList.add('show');
-}
-
-function closeGeminiKeyGuideModal() {
-  document.getElementById('geminiKeyGuideModal').classList.remove('show');
-}
-
-// ========== HISTORY DATA FORMATTER ==========
 function addHistory(type, desc, amount, unit) {
   if (!desc) return;
   const now = new Date();
-  
   const dateStr = now.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
   const timeDetail = now.toLocaleString('ko-KR', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
-
-  state.history.unshift({
-    type, desc, amount, unit,
-    date: timeDetail,
-    dateStr: dateStr 
-  });
-  
+  state.history.unshift({ type, desc, amount, unit, date: timeDetail, dateStr: dateStr });
   if (state.history.length > 200) state.history = state.history.slice(0, 200);
 }
 
 function renderHistory() {
   const list = document.getElementById('historyList');
   let items = state.history;
-  
   if (historyFilter === 'time') items = items.filter(h => h.type.includes('time'));
   if (historyFilter === 'coin') items = items.filter(h => h.type.includes('coin'));
   
-  if (!items || !items.length) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><p>기록이 없습니다.</p></div>';
-    return;
-  }
-
+  if (!items || !items.length) { list.innerHTML = '<div class="empty-state"><p>기록이 없습니다.</p></div>'; return; }
   const grouped = {};
   items.forEach(h => {
     const day = h.dateStr || "이전 기록";
-    if (!grouped[day]) {
-      grouped[day] = {
-        items: [],
-        earnedTime: 0,
-        usedTime: 0,
-        earnedCoin: 0,
-        usedCoin: 0
-      };
-    }
+    if (!grouped[day]) grouped[day] = { items: [], earnedTime: 0, usedTime: 0, earnedCoin: 0, usedCoin: 0 };
     grouped[day].items.push(h);
-
     const amt = parseInt(h.amount) || 0;
-    if (h.type.includes('time')) {
-      if (amt > 0) grouped[day].earnedTime += amt;
-      else grouped[day].usedTime += Math.abs(amt);
-    } else if (h.type.includes('coin')) {
-      if (amt > 0) grouped[day].earnedCoin += amt;
-      else grouped[day].usedCoin += Math.abs(amt);
-    }
+    if (h.type.includes('time')) { if (amt > 0) grouped[day].earnedTime += amt; else grouped[day].usedTime += Math.abs(amt); }
+    else if (h.type.includes('coin')) { if (amt > 0) grouped[day].earnedCoin += amt; else grouped[day].usedCoin += Math.abs(amt); }
   });
 
   const icons = { 'earn-time':'⏰', 'earn-coin':'💰', 'use-time':'🎮', 'use-coin':'🛒', 'pending':'⏳', 'reject':'❌' };
-
   list.innerHTML = Object.keys(grouped).map(day => {
     const summary = grouped[day];
-    
-    let summaryHTML = '';
-    if (summary.earnedTime || summary.usedTime) {
-      summaryHTML += `<span class="summary-pill gain">⏰ +${summary.earnedTime}분</span>`;
-      summaryHTML += `<span class="summary-pill loss">⏰ -${summary.usedTime}분</span>`;
-    }
-    if (summary.earnedCoin || summary.usedCoin) {
-      summaryHTML += `<span class="summary-pill gain">💰 +${summary.earnedCoin}</span>`;
-      summaryHTML += `<span class="summary-pill loss">💰 -${summary.usedCoin}</span>`;
-    }
-
-    const itemsHTML = summary.items.map(h => `
-      <div class="history-item ${h.type}">
-        <div class="history-icon">${icons[h.type] || '📌'}</div>
-        <div class="history-info">
-          <div class="history-desc">${h.desc}</div>
-          <div class="history-date">${h.date}</div>
-        </div>
-        <div class="history-amount">${h.amount > 0 ? '+' : ''}${h.amount}${h.unit}</div>
-      </div>
-    `).join('');
-
     return `
       <div class="history-group-card">
         <div class="history-group-header">
-          <div class="history-group-date">${day} 일일 통계</div>
+          <div class="history-group-date">${day}</div>
           <div class="history-group-summary">
-            ${summaryHTML || '<span class="summary-pill">변동 기록 없음</span>'}
+            <span class="summary-pill gain">⏰ +${summary.earnedTime}분</span>
+            <span class="summary-pill loss">⏰ -${summary.usedTime}분</span>
+            <span class="summary-pill gain">💰 +${summary.earnedCoin}</span>
+            <span class="summary-pill loss">💰 -${summary.usedCoin}</span>
           </div>
         </div>
         <div>
-          ${itemsHTML}
+          ${summary.items.map(h => `
+            <div class="history-item ${h.type}">
+              <div class="history-icon">${icons[h.type] || '📌'}</div>
+              <div class="history-info">
+                <div class="history-desc">${h.desc}</div>
+                <div class="history-date">${h.date}</div>
+              </div>
+              <div class="history-amount">${h.amount > 0 ? '+' : ''}${h.amount}${h.unit}</div>
+            </div>`).join('')}
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
 function filterHistory(f, btn) {
-  historyFilter = f;
-  document.querySelectorAll('#section-history .chip').forEach(c => c.classList.remove('selected'));
-  btn.classList.add('selected');
-  renderHistory();
+  historyFilter = f; document.querySelectorAll('#section-history .chip').forEach(c => c.classList.remove('selected'));
+  btn.classList.add('selected'); renderHistory();
 }
 
-// ========== PARENT PORTAL ==========
 function openParentModal() {
   if (state.isParent) { toggleParentMode(false); return; }
-  document.getElementById('pwInput').value = '';
-  document.getElementById('pwModal').classList.add('show');
-  setTimeout(() => document.getElementById('pwInput').focus(), 100);
+  document.getElementById('pwInput').value = ''; document.getElementById('pwModal').classList.add('show');
 }
-
 function closeModal() { document.getElementById('pwModal').classList.remove('show'); }
-
 function checkPw() {
-  const pw = document.getElementById('pwInput').value;
-  if (pw === state.password) {
-    closeModal();
-    toggleParentMode(true);
-  } else {
-    document.getElementById('pwInput').value = '';
-    document.getElementById('pwInput').placeholder = '틀렸어요!';
-    showToast('비밀번호가 틀렸어요!', true);
-    setTimeout(() => document.getElementById('pwInput').placeholder = '••••', 1500);
-  }
+  if (document.getElementById('pwInput').value === state.password) { closeModal(); toggleParentMode(true); }
+  else { showToast('비밀번호 불일치', true); }
 }
 
 function toggleParentMode(on) {
   state.isParent = on;
-  document.getElementById('parentBtn').innerHTML = on
-    ? '👑 부모님 <span class="parent-badge">관리중</span>'
-    : '👑 부모님';
-  const tab = document.getElementById('tab-parent');
-  tab.style.display = on ? 'block' : 'none';
-  if (on) { showTab('parent'); showToast('👑 부모님 관리 화면 켜짐'); }
-  else { showTab('missions'); showToast('부모님 모드 꺼짐'); }
+  document.getElementById('parentBtn').innerHTML = on ? '👑 부모님 <span class="parent-badge">관리중</span>' : '👑 부모님';
+  document.getElementById('tab-parent').style.display = on ? 'block' : 'none';
+  showTab(on ? 'parent' : 'missions');
 }
 
 function selectIcon(el, icon) {
   document.querySelectorAll('#iconPicker .chip').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedIcon = icon;
+  el.classList.add('selected'); selectedIcon = icon;
 }
-
 function selectRepeat(el, v) {
   document.querySelectorAll('#section-parent .form-group .chip').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedRepeat = v;
+  el.classList.add('selected'); selectedRepeat = v;
 }
 
 function addMission() {
   const name = document.getElementById('missionName').value.trim();
-  if (!name) { showToast('미션 이름을 입력하세요!', true); return; }
-  const timeR = parseInt(document.getElementById('missionTime').value) || 0;
-  const coinR = parseInt(document.getElementById('missionCoin').value) || 0;
-  if (!timeR && !coinR) { showToast('보상을 하나 이상 설정하세요!', true); return; }
-
+  if(!name) return;
   state.missions.push({
-    id: state.nextMissionId++,
-    name,
-    desc: document.getElementById('missionDesc').value.trim(),
-    icon: selectedIcon,
-    timeReward: timeR,
-    coinReward: coinR,
-    repeat: selectedRepeat,
-    status: 'available',
+    id: state.nextMissionId++, name,
+    desc: document.getElementById('missionDesc').value.trim(), icon: selectedIcon,
+    timeReward: parseInt(document.getElementById('missionTime').value) || 0,
+    coinReward: parseInt(document.getElementById('missionCoin').value) || 0,
+    repeat: selectedRepeat, status: 'available'
   });
-
-  document.getElementById('missionName').value = '';
-  document.getElementById('missionDesc').value = '';
-  document.getElementById('missionTime').value = '';
-  document.getElementById('missionCoin').value = '';
-
-  updateFirestore();
-  renderAll(); 
-  showToast('🎯 미션 추가 완료!');
+  updateFirestore(); renderAll(); showToast('미션 추가 완료!');
 }
 
 async function deleteMission(id) {
-  const m = state.missions.find(x => Number(x.id) === Number(id));
-  if (!m) return;
-  
-  const confirmResult = await showConfirm(
-    "🗑️ 미션 삭제", 
-    `'${m.name}' 미션을 완전히 삭제할까요?`
-  );
-  if (!confirmResult) return;
-  
-  state.missions = state.missions.filter(x => Number(x.id) !== Number(id));
-  updateFirestore();
-  renderAll(); 
-  showToast('미션이 삭제되었습니다.');
+  state.missions = state.missions.filter(x => x.id != id);
+  updateFirestore(); renderAll();
 }
 
 function renderParentMissions() {
-  const list = document.getElementById('parentMissionList');
-  if (!list) return;
-  if (!state.missions.length) { list.innerHTML = '<p style="color:var(--subtext);font-size:13px">미션 없음</p>'; return; }
-  
-  list.innerHTML = state.missions.map(m => {
-    const typeLabel = (m.repeat === 'always' || m.repeat === 'daily') ? '상시 반복' : '특별(1회성)';
-    return `
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
-        <span style="font-size:22px">${m.icon}</span>
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:14px">${m.name}</div>
-          <div style="font-size:11px;color:var(--subtext)">${typeLabel} | ${m.timeReward?'⏰ +'+m.timeReward+'분 ':''} ${m.coinReward?'💰 +'+m.coinReward+'원':''}</div>
-        </div>
-        <button class="del-btn" onclick="deleteMission(${m.id})">✕</button>
+  document.getElementById('parentMissionList').innerHTML = state.missions.map(m => `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)">
+      <span style="font-size:22px">${m.icon}</span>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:14px">${m.name}</div>
       </div>
-    `;
-  }).join('');
+      <button class="del-btn" onclick="deleteMission(${m.id})">✕</button>
+    </div>`).join('');
 }
 
 function renderApprovalList() {
-  const approvalContainer = document.getElementById('parentApprovalList');
-  if (!approvalContainer) return;
-  
-  const pendingMissions = state.missions.filter(m => m.status === 'pending');
-  if (!pendingMissions.length) {
-    approvalContainer.innerHTML = '<p style="font-size:12px;color:var(--subtext);">승인 대기중인 미션이 없습니다. 😊</p>';
-    return;
-  }
-
-  approvalContainer.innerHTML = pendingMissions.map(m => {
-    const typeLabel = (m.repeat === 'always' || m.repeat === 'daily') ? '상시' : '특별';
-    return `
-      <div class="approval-item">
-        <div style="font-size:24px">${m.icon}</div>
-        <div style="flex:1; min-width:0;">
-          <div style="font-weight:700; font-size:13px; display:flex; align-items:center; gap:6px;">
-            <span>${m.name}</span>
-            <span style="font-size:10px; padding:1px 5px; border-radius:4px; border:1px solid rgba(255,255,255,0.2);">${typeLabel}</span>
-          </div>
-          <div style="font-size:11px; color:var(--subtext)">보상: ${m.timeReward ? '⏰'+m.timeReward+'분' : ''} ${m.coinReward ? '💰'+m.coinReward+'원' : ''}</div>
-        </div>
-        <div class="approval-btn-group">
-          <button class="approve-action-btn yes" onclick="approveMission(${m.id})">승인 👍</button>
-          <button class="approve-action-btn no" onclick="rejectMission(${m.id})">반려 ❌</button>
-        </div>
-      </div>
-    `;
-  }).join('');
+  const pending = state.missions.filter(m => m.status === 'pending');
+  document.getElementById('parentApprovalList').innerHTML = pending.length ? pending.map(m => `
+    <div class="approval-item">
+      <div style="flex:1"><strong>${m.name}</strong></div>
+      <button class="approve-action-btn yes" onclick="approveMission(${m.id})">승인 👍</button>
+      <button class="approve-action-btn no" onclick="rejectMission(${m.id})">반려 ❌</button>
+    </div>`).join('') : '<p style="font-size:12px;color:var(--subtext);">대기중인 미션이 없습니다.</p>';
 }
 
 function renderCompletedList() {
-  const completedContainer = document.getElementById('parentCompletedList');
-  if (!completedContainer) return;
-
-  const completedMissions = state.missions.filter(m => m.status === 'completed');
-  if (!completedMissions.length) {
-    completedContainer.innerHTML = '<p style="font-size:12px;color:var(--subtext);">오늘 완전히 완료된 미션이 없습니다.</p>';
-    return;
-  }
-
-  completedContainer.innerHTML = completedMissions.map(m => `
-    <div class="approval-item" style="border-color: rgba(255,255,255,0.08); background: rgba(0,0,0,0.15)">
-      <div style="font-size:20px">${m.icon}</div>
-      <div style="flex:1; min-width:0;">
-        <div style="font-weight:700; font-size:12px; text-decoration: line-through; opacity: 0.7;">${m.name} (특별 미션)</div>
-        <div style="font-size:11px; color:var(--subtext)">회수량: ${m.timeReward ? '⏰-'+m.timeReward+'분' : ''} ${m.coinReward ? '💰-'+m.coinReward+'원' : ''}</div>
-      </div>
-      <button class="approve-action-btn no" style="background: rgba(255,183,77,0.2); border-color: var(--orange); color: var(--orange)" onclick="revertMission(${m.id})">회수 ⏪</button>
-    </div>
-  `).join('');
+  const completed = state.missions.filter(m => m.status === 'completed');
+  document.getElementById('parentCompletedList').innerHTML = completed.length ? completed.map(m => `
+    <div class="approval-item">
+      <div style="flex:1">${m.name}</div>
+      <button class="approve-action-btn no" onclick="revertMission(${m.id})">회수 ⏪</button>
+    </div>`).join('') : '<p style="font-size:12px;color:var(--subtext);">완료 미션이 없습니다.</p>';
 }
 
 function giveReward() {
-  const reason = document.getElementById('rewardReason').value.trim() || '부모님 선물';
+  const reason = document.getElementById('rewardReason').value.trim() || '선물';
   const t = parseInt(document.getElementById('rewardTime').value) || 0;
   const c = parseInt(document.getElementById('rewardCoin').value) || 0;
-  if (!t && !c) { showToast('보상 시간 또는 코인을 입력하세요!', true); return; }
-  
-  state.timeBalance += t;
-  state.coinBalance += c;
-  
-  state.todayEarnedMinutes = (state.todayEarnedMinutes || 0) + t;
-  state.todayEarnedCoins = (state.todayEarnedCoins || 0) + c;
-  
-  if (t) addHistory('earn-time', `${reason} ⏰ +${t}분`, t, '분');
-  if (c) addHistory('earn-coin', `${reason} 💰 +${c}코인`, c, '코인');
-  
-  document.getElementById('rewardReason').value = '';
-  document.getElementById('rewardTime').value = '';
-  document.getElementById('rewardCoin').value = '';
-  
-  updateFirestore();
-  renderAll(); 
-  celebrate();
-  showToast(`🎁 보상 지급 완료! ${t ? '⏰+'+t+'분' : ''} ${c ? '💰+'+c : ''}`);
+  state.timeBalance += t; state.coinBalance += c; state.todayEarnedMinutes += t; state.todayEarnedCoins += c;
+  if(t) addHistory('earn-time', reason, t, '분'); if(c) addHistory('earn-coin', reason, c, '코인');
+  updateFirestore(); renderAll(); celebrate();
 }
 
 function deductReward() {
-  const reason = document.getElementById('deductReason').value.trim() || '부모님 벌칙';
+  const reason = document.getElementById('deductReason').value.trim() || '차감';
   const t = parseInt(document.getElementById('deductTime').value) || 0;
   const c = parseInt(document.getElementById('deductCoin').value) || 0;
-  if (!t && !c) { showToast('차감할 시간 또는 코인을 입력해 주세요!', true); return; }
-
-  state.timeBalance = Math.max(0, state.timeBalance - t);
-  state.coinBalance = Math.max(0, state.coinBalance - c);
-
-  state.todayEarnedMinutes = Math.max(0, (state.todayEarnedMinutes || 0) - t);
-  state.todayEarnedCoins = Math.max(0, (state.todayEarnedCoins || 0) - c);
-
-  if (t) addHistory('use-time', `${reason} ⏰ -${t}분 (차감)`, -t, '분');
-  if (c) addHistory('use-coin', `${reason} 💰 -${c}코인 (차감)`, -c, '코인');
-
-  document.getElementById('deductReason').value = '';
-  document.getElementById('deductTime').value = '';
-  document.getElementById('deductCoin').value = '';
-
-  updateFirestore();
-  renderAll(); 
-  showToast(`🚨 보상 차감 완료! ${t ? '⏰-'+t+'분' : ''} ${c ? '💰-'+c : ''}`);
-}
-
-// ========== CONFIG PARSER ==========
-function parseFlexibleConfig(input) {
-  let str = input.trim();
-  str = str.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '$1');
-  const firstBrace = str.indexOf('{');
-  const lastBrace = str.lastIndexOf('}');
-  if (firstBrace !== -1 && lastBrace !== -1) {
-    str = str.substring(firstBrace, lastBrace + 1);
-  }
-  try {
-    const fn = new Function('return ' + str);
-    const result = fn();
-    if (result && typeof result === 'object') {
-      return result;
-    }
-    throw new Error("오브젝트 에러");
-  } catch (e) {
-    try {
-      return JSON.parse(str);
-    } catch (jsonErr) {
-      throw new Error("설정값 파싱 실패");
-    }
-  }
+  state.timeBalance = Math.max(0, state.timeBalance - t); state.coinBalance = Math.max(0, state.coinBalance - c);
+  if(t) addHistory('use-time', reason, -t, '분'); if(c) addHistory('use-coin', reason, -c, '코인');
+  updateFirestore(); renderAll();
 }
 
 function saveSettings() {
   const name = document.getElementById('kidName').value.trim();
   const pw = document.getElementById('newPw').value.trim();
-  if (name) state.kidName = name;
-  if (pw) {
-    if (pw.length < 4) { showToast('비밀번호는 4자리 이상으로 해주세요!', true); return; }
-    state.password = pw;
-  }
-  
-  updateFirestore();
-  renderAll(); 
-  document.getElementById('newPw').value = '';
-  showToast('💾 설정을 성공적으로 저장했습니다!');
+  if(name) state.kidName = name; if(pw) state.password = pw;
+  updateFirestore(); renderAll(); showToast('저장 완료');
 }
 
-function openFamilyModal() {
-  document.getElementById('familyCodeInput').value = '';
-  document.getElementById('familyModal').classList.add('show');
-  setTimeout(() => document.getElementById('familyCodeInput').focus(), 100);
-}
-
-function closeFamilyModal() {
-  document.getElementById('familyModal').classList.remove('show');
-}
-
+function openFamilyModal() { document.getElementById('familyModal').classList.add('show'); }
+function closeFamilyModal() { document.getElementById('familyModal').classList.remove('show'); }
 function connectFamilyCode() {
   const code = document.getElementById('familyCodeInput').value.trim();
-  if (code.length < 6) {
-    showToast('6자리 가족 코드를 정확하게 입력하세요!', true);
-    return;
-  }
-  
-  closeFamilyModal();
-  startFirebaseSync(code);
-  showToast(`🏠 가족 보물상자(${code})에 연결을 시도합니다.`);
+  if(code.length===6) { closeFamilyModal(); startFirebaseSync(code); }
 }
-
 function copyFamilyCode() {
-  const codeStr = state.familyId;
-  const tempInput = document.createElement('input');
-  tempInput.value = codeStr;
-  document.body.appendChild(tempInput);
-  tempInput.select();
-  try {
-    document.execCommand('copy');
-    showToast('📋 가족 코드가 복사되었습니다! 상대방 폰에 전달하세요.');
-  } catch (err) {
-    showToast('🔴 복사 실패. 직접 입력해주세요.', true);
-  }
-  document.body.removeChild(tempInput);
+  navigator.clipboard.writeText(state.familyId).then(() => showToast("코드가 복사되었습니다."));
 }
 
 async function saveCloudConfig() {
-  const inputVal = document.getElementById('firebaseConfigInput').value.trim();
-  if (!inputVal) {
-    showToast("설정값을 입력해주세요!", true);
-    return;
-  }
-
   try {
-    const configObj = parseFlexibleConfig(inputVal);
-    const success = await initializeFirebaseDynamic(configObj);
-    
-    if (success) {
-      localStorage.setItem('treasureBox_firebaseConfig', JSON.stringify(configObj));
-      showToast("⚡ 클라우드 설정을 저장했습니다! 새 연결을 적용하기 위해 새로고침 중...");
-      setTimeout(() => {
-        location.reload();
-      }, 1500);
-    } else {
-      showToast("🔴 잘못된 클라우드 정보이거나 연결 차단 오류가 발생했습니다.", true);
-    }
-  } catch (e) {
-    showToast("🔴 복사한 값의 포맷이 잘못되었습니다. 전체 코문을 다시 정확히 복사해 보세요.", true);
-  }
+    const configObj = JSON.parse(document.getElementById('firebaseConfigInput').value.trim());
+    await initializeFirebaseDynamic(configObj);
+    localStorage.setItem('treasureBox_firebaseConfig', JSON.stringify(configObj));
+    showToast("클라우드 설정 저장 완료! 재부팅 중...");
+    setTimeout(() => location.reload(), 1000);
+  } catch(e) { showToast("포맷 오류", true); }
 }
 
-async function resetCloudConfig() {
-  const confirmResult = await showConfirm(
-    "🔌 연동 해제", 
-    "클라우드 연동을 해제하고 기기 단독 저장 모드(오프라인)로 돌릴까요?"
-  );
-  if (!confirmResult) return;
-
+function resetCloudConfig() {
   localStorage.removeItem('treasureBox_firebaseConfig');
-  showToast("🔌 연동이 해제되었습니다. 로컬 모드로 전환하기 위해 새로고침 중...");
-  setTimeout(() => {
-    location.reload();
-  }, 1500);
+  showToast("초기화 완료! 재부팅 중...");
+  setTimeout(() => location.reload(), 1000);
 }
 
-// ========== CELEBRATION (CONFETTI) ==========
 function celebrate() {
-  const container = document.createElement('div');
-  container.className = 'confetti';
-  document.body.appendChild(container);
-  const colors = ['#ffd700','#ff6b9d','#4fc3f7','#00d4aa','#ce93d8','#ffb74d'];
-  for (let i = 0; i < 60; i++) {
-    const p = document.createElement('div');
-    p.className = 'confetti-piece';
-    p.style.cssText = `left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.5}s;border-radius:${Math.random()>0.5?'50%':'2px'}`;
+  const container = document.createElement('div'); container.className = 'confetti'; document.body.appendChild(container);
+  for (let i = 0; i < 40; i++) {
+    const p = document.createElement('div'); p.className = 'confetti-piece';
+    p.style.cssText = `left:${Math.random()*100}%;background:#ffd700;width:8px;height:8px;animation-duration:2s;`;
     container.appendChild(p);
   }
-  setTimeout(() => container.remove(), 3000);
+  setTimeout(() => container.remove(), 2500);
 }
 
-// ========== TOAST ==========
 function showToast(msg, isError = false) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast' + (isError ? ' error' : '');
-  requestAnimationFrame(() => { t.classList.add('show'); });
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 4000); 
+  const t = document.getElementById('toast'); t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : ''); t.classList.add('show');
+  clearTimeout(t._timer); t._timer = setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// ========== EXPOSE FUNCTIONS TO WINDOW FOR HTML INLINE EVENTS ==========
-window.bypassLoading = bypassLoading;
-window.toggleAccordion = toggleAccordion;
-window.stopTimer = stopTimer;
-window.closeConfirmModal = closeConfirmModal;
-window.checkBankInterestAndReset = checkBankInterestAndReset;
+window.bypassLoading = bypassLoading; window.toggleAccordion = toggleAccordion; window.stopTimer = stopTimer; window.closeConfirmModal = closeConfirmModal; window.showTab = showTab; window.completeMission = completeMission; window.approveMission = approveMission; window.rejectMission = rejectMission; window.revertMission = revertMission; window.useTime = useTime; window.useCoin = useCoin; window.setTimeQuick = setTimeQuick; window.filterHistory = filterHistory; window.openParentModal = openParentModal; window.closeModal = closeModal; window.checkPw = checkPw; window.selectIcon = selectIcon; window.selectRepeat = selectRepeat; window.addMission = addMission; window.deleteMission = deleteMission; window.giveReward = giveReward; window.deductReward = deductReward; window.saveSettings = saveSettings; window.openFamilyModal = openFamilyModal; window.closeFamilyModal = closeFamilyModal; window.connectFamilyCode = connectFamilyCode; window.copyFamilyCode = copyFamilyCode; window.saveCloudConfig = saveCloudConfig; window.resetCloudConfig = resetCloudConfig; window.selectQuizCategory = selectQuizCategory; window.selectQuizDifficulty = selectQuizDifficulty; window.generateAIQuiz = generateAIQuiz; window.submitAIAnswer = submitAIAnswer; window.exitAIQuiz = exitAIQuiz; window.setDefenseDifficulty = setDefenseDifficulty; window.startMathDefenseGame = startMathDefenseGame; window.submitDefenseAnswer = submitDefenseAnswer; window.pressDefensePad = pressDefensePad; window.depositToBank = depositToBank; window.withdrawFromBank = withdrawFromBank; window.convertTimeToCoin = convertTimeToCoin; window.convertCoinToTime = convertCoinToTime; window.enableCosmicNotifications = enableCosmicNotifications; window.saveTargetGoalAmount = saveTargetGoalAmount; window.selectExpeditionSubject = selectExpeditionSubject; window.startKnowledgeExpedition = startKnowledgeExpedition; window.prevSlide = prevSlide; window.nextSlide = nextSlide; window.speakCurrentSlide = speakCurrentSlide; window.submitExpeditionAnswer = submitExpeditionAnswer; window.exitExpedition = exitExpedition; window.startMeteorDodgeGame = startMeteorDodgeGame; window.moveDodgeLeft = moveDodgeLeft; window.moveDodgeRight = moveDodgeRight; window.startBrickBreakerGame = startBrickBreakerGame; window.moveBreakerLeft = moveBreakerLeft; window.moveBreakerRight = moveBreakerRight; window.startAlienShooterGame = startAlienShooterGame; window.moveShooterLeft = moveShooterLeft; window.moveShooterRight = moveShooterRight; window.saveGeminiApiKey = saveGeminiApiKey; window.saveGeminiApiKeyFromModal = saveGeminiApiKeyFromModal; window.showGeminiKeyGuideModal = showGeminiKeyGuideModal; window.closeGeminiKeyGuideModal = closeGeminiKeyGuideModal; window.dismissAlarm = dismissAlarm;
 
-window.showTab = showTab;
-window.completeMission = completeMission;
-window.approveMission = approveMission;
-window.rejectMission = rejectMission;
-window.revertMission = revertMission;
-window.useTime = useTime;
-window.useCoin = useCoin;
-window.setTimeQuick = setTimeQuick;
-window.filterHistory = filterHistory;
-window.openParentModal = openParentModal;
-window.closeModal = closeModal;
-window.checkPw = checkPw;
-window.selectIcon = selectIcon;
-window.selectRepeat = selectRepeat;
-window.addMission = addMission;
-window.deleteMission = deleteMission;
-window.giveReward = giveReward;
-window.deductReward = deductReward;
-window.saveSettings = saveSettings;
-window.openFamilyModal = openFamilyModal;
-window.closeFamilyModal = closeFamilyModal;
-window.connectFamilyCode = connectFamilyCode;
-window.copyFamilyCode = copyFamilyCode;
-window.saveCloudConfig = saveCloudConfig;
-window.resetCloudConfig = resetCloudConfig;
+async function init() {
+  renderStars();
+  let activeConfig = defaultFirebaseConfig;
+  const savedConfigStr = localStorage.getItem('treasureBox_firebaseConfig');
+  if (savedConfigStr) { try { activeConfig = JSON.parse(savedConfigStr); } catch(e) {} }
 
-// Custom new features
-window.selectQuizCategory = selectQuizCategory;
-window.selectQuizDifficulty = selectQuizDifficulty;
-window.generateAIQuiz = generateAIQuiz;
-window.submitAIAnswer = submitAIAnswer;
-window.exitAIQuiz = exitAIQuiz;
-window.setDefenseDifficulty = setDefenseDifficulty;
-window.startMathDefenseGame = startMathDefenseGame;
-window.submitDefenseAnswer = submitDefenseAnswer;
-window.pressDefensePad = pressDefensePad;
-window.depositToBank = depositToBank;
-window.withdrawFromBank = withdrawFromBank;
-window.convertTimeToCoin = convertTimeToCoin;
-window.convertCoinToTime = convertCoinToTime;
-window.enableCosmicNotifications = enableCosmicNotifications;
-window.saveTargetGoalAmount = saveTargetGoalAmount;
+  if (activeConfig) {
+    await initializeFirebaseDynamic(activeConfig);
+    if(document.getElementById('firebaseConfigInput')) document.getElementById('firebaseConfigInput').value = JSON.stringify(activeConfig, null, 2);
+  }
 
-// Expedition
-window.selectExpeditionSubject = selectExpeditionSubject;
-window.startKnowledgeExpedition = startKnowledgeExpedition;
-window.prevSlide = prevSlide;
-window.nextSlide = nextSlide;
-window.speakCurrentSlide = speakCurrentSlide;
-window.submitExpeditionAnswer = submitExpeditionAnswer;
-window.exitExpedition = exitExpedition;
+  let activeCode = localStorage.getItem('treasureBox_familyId');
+  if (!activeCode) { activeCode = generate6DigitCode(); }
 
-// Games
-window.startMeteorDodgeGame = startMeteorDodgeGame;
-window.moveDodgeLeft = moveDodgeLeft;
-window.moveDodgeRight = moveDodgeRight;
-window.startBrickBreakerGame = startBrickBreakerGame;
-window.moveBreakerLeft = moveBreakerLeft;
-window.moveBreakerRight = moveBreakerRight;
+  startFirebaseSync(activeCode);
+}
 
-// Shooter Game
-window.startAlienShooterGame = startAlienShooterGame;
-window.moveShooterLeft = moveShooterLeft;
-window.moveShooterRight = moveShooterRight;
-
-// API key setup
-window.saveGeminiApiKey = saveGeminiApiKey;
-window.saveGeminiApiKeyFromModal = saveGeminiApiKeyFromModal;
-window.showGeminiKeyGuideModal = showGeminiKeyGuideModal;
-window.closeGeminiKeyGuideModal = closeGeminiKeyGuideModal;
-
-// STARTUP
 init();
 </script>
 </body>
